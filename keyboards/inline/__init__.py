@@ -1,3 +1,3 @@
 from . import (
-    help, start
+    help, start, admin
 )

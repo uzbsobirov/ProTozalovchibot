@@ -1,6 +1,6 @@
 from loader import dp
 from filters import IsGroup
-from keyboards.inline.start import start
+from keyboards.inline.start import group_start
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -17,5 +17,5 @@ async def start_group(message: types.Message, state: FSMContext):
            "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
            "qilib tayinlashingiz kerak</b>"
 
-    await message.answer(text=text, reply_markup=start)
+    await message.answer(text=text, reply_markup=group_start)
     await state.finish()

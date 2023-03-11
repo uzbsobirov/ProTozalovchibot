@@ -52,6 +52,15 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
+    async def create_table_admin(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Admin (
+        id SERIAL PRIMARY KEY,
+        word TEXT UNIQUE
+        );
+        """
+        await self.execute(sql, execute=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join(
@@ -62,6 +71,10 @@ class Database:
     async def add_user(self, full_name: str, username: str, user_id: int):
         sql = "INSERT INTO users (full_name, username, user_id) VALUES($1, $2, $3) returning *"
         return await self.execute(sql, full_name, username, user_id, fetchrow=True)
+
+    async def add_word_to_adminpanel(self, word):
+        sql = "INSERT INTO Admin (word) VALUES($1)"
+        return await self.execute(sql, word, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
