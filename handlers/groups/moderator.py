@@ -1,8 +1,6 @@
-import asyncio
 import datetime
 from aiogram.dispatcher import FSMContext
 from aiogram import types
-from aiogram.types import ChatPermissions
 
 from loader import dp, bot
 from filters import IsGroup

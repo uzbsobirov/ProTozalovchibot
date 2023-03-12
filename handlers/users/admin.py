@@ -7,7 +7,8 @@ from loader import dp, db, bot
 from states.admin import Admin
 from keyboards.inline.admin import admin
 
-
+for admin_id in ADMINS:
+    pass
 
 @dp.message_handler(text="/reklama", user_id=ADMINS)
 async def send_ad_to_all(message: types.Message):
@@ -18,7 +19,7 @@ async def send_ad_to_all(message: types.Message):
         await asyncio.sleep(0.05)
 
 # Admin panel handler
-@dp.callback_query_handler(text="panel_of_admin", state='*')
+@dp.callback_query_handler(text="panel_of_admin", state='*', user_id=admin_id)
 async def admin_panel(call: types.CallbackQuery, state: FSMContext):
 
     text = "<b>Admin panelga xush kelibsiz👣</b>"

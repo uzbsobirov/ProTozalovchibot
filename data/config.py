@@ -6,11 +6,8 @@ env.read_env()
 
 # .env fayl ichidan quyidagilarni o'qiymiz
 BOT_TOKEN = env.str('BOT_TOKEN') # Bot toekn
-ADMINS = env.list('ADMINS') # adminlar ro'yxati
+ADMINS = [1435473812] # adminlar ro'yxati
 
-def admin_ids():
-    for admin in ADMINS:
-        return admin
 
 DB_USER = env.str('DB_USER')
 DB_PASS = env.str('DB_PASS')

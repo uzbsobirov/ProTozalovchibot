@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher.filters.builtin import CommandStart
 from aiogram.dispatcher import FSMContext
 
-from data.config import admin_ids
+from data.config import ADMINS
 from loader import dp, db, bot
 from filters import IsPrivate
 from keyboards.inline.start import gold_start, elite_start
@@ -28,11 +28,13 @@ async def bot_start(message: types.Message, state: FSMContext):
 
         # About message to ADMIN
         msg = f"{user_mention} [<code>{user_id}</code>] bazaga qo'shildi."
-        await bot.send_message(chat_id=admin_ids(), text=msg)
+        await bot.send_message(chat_id=ADMINS[0], text=msg)
+
 
     except:
-        await bot.send_message(chat_id=admin_ids(), text=f"{user_mention} [<code>{user_id}</code>] "
+        await bot.send_message(chat_id=ADMINS[0], text=f"{user_mention} [<code>{user_id}</code>] "
                                                          f"bazaga oldin qo'shilgan")
+
 
     text = "<b>👮🏻‍♂GURUH - da sizga yordam beraman 👇\n\n🖇 - Reklama havolalarini tozalayman\n" \
            "🚫 - Spam xabarlarni tozalayman\n🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - " \
@@ -40,8 +42,8 @@ async def bot_start(message: types.Message, state: FSMContext):
            "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
            "qilib tayinlashingiz kerak</b>"
 
-    if user_id == int(admin_ids()):
+    if user_id == int(ADMINS[0]):
         await message.answer(text=text, reply_markup=gold_start)
+
     else:
         await message.answer(text=text, reply_markup=elite_start)
-
