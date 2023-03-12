@@ -61,6 +61,15 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
+    async def create_table_groups(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS Groups (
+        id SERIAL PRIMARY KEY,
+        chat_id BigInt UNIQUE
+        );
+        """
+        await self.execute(sql, execute=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join(
@@ -76,8 +85,16 @@ class Database:
         sql = "INSERT INTO Admin (word) VALUES($1)"
         return await self.execute(sql, word, fetchrow=True)
 
+    async def add_id_of_group(self, chat_id):
+        sql = "INSERT INTO Groups (chat_id) VALUES($1)"
+        return await self.execute(sql, chat_id, fetchrow=True)
+
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
+        return await self.execute(sql, fetch=True)
+
+    async def select_all_group(self):
+        sql = "SELECT * FROM Groups"
         return await self.execute(sql, fetch=True)
 
     async def select_one_users(self, user_id):

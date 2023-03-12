@@ -4,7 +4,7 @@ from aiogram.dispatcher import FSMContext
 
 from data.config import ADMINS
 from loader import dp, db, bot
-from filters import IsPrivate
+from states.admin import Admin
 from keyboards.inline.admin import admin
 
 
@@ -23,4 +23,5 @@ async def admin_panel(call: types.CallbackQuery, state: FSMContext):
 
     text = "<b>Admin panelga xush kelibsiz👣</b>"
     await call.message.edit_text(text=text, reply_markup=admin)
+    await Admin.main_admin.set()
 

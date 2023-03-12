@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from data.config import admin_ids
 from loader import dp, db, bot
 from filters import IsPrivate
-from keyboards.inline.start import start_private
+from keyboards.inline.start import gold_start, elite_start
 
 
 
@@ -40,5 +40,8 @@ async def bot_start(message: types.Message, state: FSMContext):
            "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
            "qilib tayinlashingiz kerak</b>"
 
-    await message.answer(text=text, reply_markup=start_private)
+    if user_id == int(admin_ids()):
+        await message.answer(text=text, reply_markup=gold_start)
+    else:
+        await message.answer(text=text, reply_markup=elite_start)
 

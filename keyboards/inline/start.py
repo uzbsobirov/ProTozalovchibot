@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-start_private = InlineKeyboardMarkup(
+gold_start = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
@@ -15,7 +15,7 @@ start_private = InlineKeyboardMarkup(
     ]
 )
 
-group_start = InlineKeyboardMarkup(
+elite_start = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
