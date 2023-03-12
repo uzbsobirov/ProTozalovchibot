@@ -1,13 +1,13 @@
 import asyncio
 from loader import db, dp, bot
-from states.adv import Picture
+from states.adv import *
 from keyboards.inline.adv import yes_no, buttons
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 
-# This handler for adv with photo
+# <------------Adver with photo and text------------->
 @dp.callback_query_handler(text="withpictureprivate", state='*')
 async def odinochit(call: types.CallbackQuery, state: FSMContext):
     await call.message.delete()
@@ -43,6 +43,7 @@ async def choose_yes_no_data(call: types.CallbackQuery, state: FSMContext):
 
     await call.message.delete()
     if call.data == 'choose_yoq':
+        await state.finish()
         users = await db.select_all_users()
         for user in users:
             user_id = user[3]
@@ -80,3 +81,69 @@ async def user_choose_ha_image(message: types.Message, state: FSMContext):
         except Exception as error:
             print(error)
             continue
+        await state.finish()
+
+
+# <------------Adver with text------------->
+@dp.callback_query_handler(text="withtextprivate", state='*')
+async def withtextprivate(call: types.CallbackQuery, state: FSMContext):
+    await call.message.delete()
+    await call.message.answer(text="Reklama textini yuboring")
+    await Text.text.set()
+
+@dp.message_handler(state=Text.text)
+async def text_texti(message: types.Message, state: FSMContext):
+    text_text = message.text
+
+    await state.update_data(
+        {'text_text': text_text}
+    )
+    await message.answer(text="Tugma qo'shishni xoxlaysizmi?", reply_markup=yes_no)
+    await Text.choose_yes_no.set()
+
+@dp.callback_query_handler(state=Text.choose_yes_no)
+async def choose_yes_no(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    text = data.get('text_text')
+
+    await call.message.delete()
+
+    if call.data == 'choose_yoq':
+        await state.finish()
+        users = await db.select_all_users()
+        for user in users:
+            user_id = user[3]
+            try:
+                await bot.send_message(chat_id=user_id, text=text)
+                await asyncio.sleep(1)
+            except Exception as error:
+                print(error)
+                continue
+
+    else:
+        choose_text = "<b>Tugma qo'shmoqchi bo'lsangiz namunadagidek qilib yuboring👇\n\n" \
+                      "<code>Foydali botlar+https://t.me/kayzenuz</code></b>"
+        await call.message.answer(text=choose_text)
+        await Text.choose_yes.set()
+
+@dp.message_handler(state=Text.choose_yes)
+async def user_choose_ha_image(message: types.Message, state: FSMContext):
+    btn_link = message.text
+    split_text = btn_link.split('+')
+    adv_text = split_text[0]
+    adv_url = split_text[1]
+
+    data = await state.get_data()
+    text = data.get('text_text')
+
+    users = await db.select_all_users()
+    for user in users:
+        user_id = user[3]
+        try:
+            await bot.send_message(chat_id=user_id, text=text,
+                                                    reply_markup=buttons(text=adv_text, url=adv_url))
+            await asyncio.sleep(1)
+        except Exception as error:
+            print(error)
+            continue
+        await state.finish()
