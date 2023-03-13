@@ -70,6 +70,15 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
+    async def create_table_bad_words(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS BadWords (
+        id SERIAL PRIMARY KEY,
+        badword TEXT UNIQUE
+        );
+        """
+        await self.execute(sql, execute=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join(
@@ -85,12 +94,20 @@ class Database:
         sql = "INSERT INTO Admin (word) VALUES($1)"
         return await self.execute(sql, word, fetchrow=True)
 
+    async def add_word_to_bad_word(self, badword):
+        sql = "INSERT INTO BadWords (badword) VALUES($1)"
+        return await self.execute(sql, badword, fetchrow=True)
+
     async def add_id_of_group(self, chat_id):
         sql = "INSERT INTO Groups (chat_id) VALUES($1)"
         return await self.execute(sql, chat_id, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
+        return await self.execute(sql, fetch=True)
+
+    async def select_all_badwrods(self):
+        sql = "SELECT * FROM BadWords"
         return await self.execute(sql, fetch=True)
 
     async def select_all_group(self):

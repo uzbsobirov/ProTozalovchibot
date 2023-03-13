@@ -1,6 +1,7 @@
 from loader import dp, db
 from filters import IsGroup
 from keyboards.inline.start import elite_start
+from utils.misc.group import check_is_admin
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -18,13 +19,13 @@ async def start_group(message: types.Message, state: FSMContext):
         print(error)
         pass
 
+    bot_is = await check_is_admin(chat_id=chat_id)
+    bot_checking = bot_is[0]['status']
 
+    if bot_checking != 'administrator':
+        text = "<b>Bot ishlashi uchun guruhingizga ADMIN qilishingiz kerak ❗️ </b>"
+        await message.answer(text=text, reply_markup=elite_start)
+    else:
+        await message.answer(text="Bot guruhda oʻz faoliyatini boshladi ✅")
 
-    text = "<b>👮🏻‍♂GURUH - da sizga yordam beraman 👇\n\n🖇 - Reklama havolalarini tozalayman\n" \
-           "🚫 - Spam xabarlarni tozalayman\n🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - " \
-           "Arab botlardan ximoya qilaman\n🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman" \
-           "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
-           "qilib tayinlashingiz kerak</b>"
-
-    await message.answer(text=text, reply_markup=elite_start)
     await state.finish()

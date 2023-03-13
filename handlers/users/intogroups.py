@@ -9,7 +9,5 @@ from aiogram.dispatcher import FSMContext
 async def into_groupss(call: types.CallbackQuery, state: FSMContext):
     await SendingGroup.group.set()
 
-    groups = await db.select_all_group()
-    print(groups)
     text = "<b>Kerakli reklama turini tanlang</b>"
     await call.message.edit_text(text=text, reply_markup=types_group)

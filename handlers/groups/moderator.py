@@ -2,9 +2,10 @@ import datetime
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
-from loader import dp, bot
+from loader import dp, db
 from filters import IsGroup
 from utils.misc.subscription import check
+
 
 
 @dp.message_handler(IsGroup(), state='*')
@@ -29,18 +30,19 @@ async def deleteads(message: types.Message, state: FSMContext):
     for item in list_of_arab_words:
         if item in message.text:
             await message.delete()
+            await message.chat.kick(user_id=user_id)
             break
 
 
-    list_of_insulting_words = ['qotaq', 'qotoq', 'qo\'taq', 'sikaman', 'ske', 'kot', 'ko\'t']
 
+    list_of_insulting_words = await db.select_all_badwrods()
     msg = message.text
     for word in list_of_insulting_words:
-        if word in msg:
+        if msg in word[1]:
             await message.delete()
             restriction_time = 5
             until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
-            siuu = await message.chat.restrict(user_id=user_id,
+            await message.chat.restrict(user_id=user_id,
                                            can_send_messages=False, until_date=until_date)
 
 

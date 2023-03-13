@@ -68,3 +68,11 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     text = "<b>Keraklisini tanlang👇</b>"
     await call.message.edit_text(text=text, reply_markup=type_sending)
     await Admin.sending.set()
+
+@dp.callback_query_handler(text="bad_words_back", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    text = "<b>Admin panelga xush kelibsiz👣</b>"
+    await call.message.edit_text(text=text, reply_markup=admin)
+    await Admin.main_admin.set()

@@ -1,3 +1,3 @@
 from . import (
-    help, start, admin, backs
+    help, start, admin, backs, badwords
 )
