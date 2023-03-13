@@ -26,5 +26,5 @@ async def static(call: types.CallbackQuery, state: FSMContext):
 
     text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
     f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {len(all_groups)}\n🫂 Guruh obunachilar: {all_users}" \
-    f"\n👤Barcha obunachilar: {all_users+count}\n\n⚡️@ProTozalovchibot</b>"
+    f"\n👤Barcha obunachilar: {all_users+len(all_groups)}"
     await call.message.edit_text(text=text, reply_markup=back_stat)

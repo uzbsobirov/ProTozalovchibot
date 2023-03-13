@@ -13,7 +13,7 @@ async def start_group(message: types.Message, state: FSMContext):
 
     chat_id = message.chat.id
     try:
-        select_db = await db.add_id_of_group(chat_id=chat_id)
+        await db.add_id_of_group(chat_id=chat_id)
     except Exception as error:
         print(error)
         pass

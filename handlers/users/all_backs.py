@@ -20,7 +20,7 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
            "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
            "qilib tayinlashingiz kerak</b>"
 
-    if user_id == int(admin):
+    if user_id == int(ADMINS[0]):
         await call.message.edit_text(text=text, reply_markup=gold_start)
     else:
         await call.message.edit_text(text=text, reply_markup=elite_start)
@@ -50,8 +50,8 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
 
 
 
-# Bu handler xabar yuborish bolimidan Admin panel menuga qaytish uchun
-@dp.callback_query_handler(text="stat_back", state=SendingGroup.group)
+
+@dp.callback_query_handler(text="stat_back", state=SendingUser.user)
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
 
@@ -59,8 +59,9 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_text(text=text, reply_markup=type_sending)
     await Admin.sending.set()
 
-# Bu handler xabar yuborish bolimidan Admin panel menuga qaytish uchun
-@dp.callback_query_handler(text="stat_back", state=SendingUser.user)
+
+
+@dp.callback_query_handler(text="back_group", state='*')
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
 

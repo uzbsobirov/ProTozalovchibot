@@ -23,7 +23,7 @@ types_group = InlineKeyboardMarkup(
             InlineKeyboardButton(text="📝 Text", callback_data='withtextgroup')
         ],
         [
-            InlineKeyboardButton(text="◀️ Orqaga", callback_data='stat_back')
+            InlineKeyboardButton(text="◀️ Orqaga", callback_data='back_group')
         ]
     ]
 )
@@ -51,6 +51,17 @@ yes_no = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(text="❌ Yo'q", callback_data='choose_yoq')
+        ]
+    ]
+)
+
+yes_no_group = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="✅ Ha", callback_data='choose_ha_group')
+        ],
+        [
+            InlineKeyboardButton(text="❌ Yo'q", callback_data='choose_yoq_group')
         ]
     ]
 )
