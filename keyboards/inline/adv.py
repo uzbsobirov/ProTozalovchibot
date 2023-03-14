@@ -72,3 +72,19 @@ def buttons(text, url):
         InlineKeyboardButton(text=text, url=url)
     )
     return markup
+
+back_group = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="◀️ Orqaga", callback_data='back_group_adv')
+        ]
+    ]
+)
+
+back_privatee = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="◀️ Orqaga", callback_data='back_private_adv')
+        ]
+    ]
+)

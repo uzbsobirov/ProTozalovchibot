@@ -136,6 +136,10 @@ class Database:
         sql = "DELETE FROM Users WHERE user_id=$1"
         await self.execute(sql, user_id, execute=True)
 
+    async def delete_bad_word(self, badword):
+        sql = "DELETE FROM BadWords WHERE badword=$1"
+        await self.execute(sql, badword, execute=True)
+
 
     async def drop_courses(self):
         await self.execute("DROP TABLE Courses", execute=True)

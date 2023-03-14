@@ -3,7 +3,7 @@ from states.admin import Admin, SendingGroup, SendingUser
 from keyboards.inline.start import gold_start, elite_start
 from data.config import ADMINS
 from keyboards.inline.admin import admin
-from keyboards.inline.adv import type_sending
+from keyboards.inline.adv import type_sending, types_private, types_group
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -76,3 +76,27 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     text = "<b>Admin panelga xush kelibsiz👣</b>"
     await call.message.edit_text(text=text, reply_markup=admin)
     await Admin.main_admin.set()
+
+@dp.callback_query_handler(text="bad_words_back_back", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    text = "<b>Admin panelga xush kelibsiz👣</b>"
+    await call.message.edit_text(text=text, reply_markup=admin)
+    await Admin.main_admin.set()
+
+@dp.callback_query_handler(text="back_private_adv", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    text = "<b>Kerakli reklama turini tanlang</b>"
+    await call.message.edit_text(text=text, reply_markup=types_private)
+    await SendingUser.user.set()
+
+@dp.callback_query_handler(text="back_group_adv", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    text = "<b>Kerakli reklama turini tanlang</b>"
+    await call.message.edit_text(text=text, reply_markup=types_group)
+    await SendingGroup.group.set()

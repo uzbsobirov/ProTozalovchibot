@@ -5,6 +5,8 @@ from aiogram import types
 from loader import dp, db
 from filters import IsGroup
 from utils.misc.subscription import check
+from data.config import ADMINS
+from keyboards.inline.start import elite_start
 
 
 
@@ -22,7 +24,7 @@ async def deleteads(message: types.Message, state: FSMContext):
             if entity.type in ['url', 'mention', 'text_link']:
                 await message.delete()
                 text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-                await message.answer(text=text)
+                await message.answer(text=text, reply_markup=elite_start)
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا'
@@ -37,13 +39,16 @@ async def deleteads(message: types.Message, state: FSMContext):
 
     list_of_insulting_words = await db.select_all_badwrods()
     msg = message.text
-    for word in list_of_insulting_words:
-        if msg in word[1]:
-            await message.delete()
-            restriction_time = 5
-            until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
-            await message.chat.restrict(user_id=user_id,
-                                           can_send_messages=False, until_date=until_date)
+    if user_id != ADMINS[0]:
+        for word in list_of_insulting_words:
+            if msg in word[1]:
+                await message.delete()
+                text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
+                await message.answer(text=text, reply_markup=elite_start)
+                restriction_time = 5
+                until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
+                await message.chat.restrict(user_id=user_id,
+                                               can_send_messages=False, until_date=until_date)
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
@@ -67,4 +72,4 @@ async def deleteads(message: types.Message, state: FSMContext):
     if entity in types_of_message:
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-        await message.answer(text=text)
+        await message.answer(text=text, reply_markup=elite_start)

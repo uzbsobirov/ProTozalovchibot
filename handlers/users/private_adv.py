@@ -1,7 +1,7 @@
 import asyncio
 from loader import db, dp, bot
 from states.adv import *
-from keyboards.inline.adv import yes_no, buttons
+from keyboards.inline.adv import yes_no, buttons, back_privatee
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -61,7 +61,8 @@ async def choose_yes_no_data(call: types.CallbackQuery, state: FSMContext):
 
         await call.message.answer(text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli "
                                                        f"yuborildi\n\n"
-                                                  f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+                                                  f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>"
+                                  , reply_markup=back_privatee)
 
     else:
         choose_text = "<b>Tugma qo'shmoqchi bo'lsangiz namunadagidek qilib yuboring👇\n\n" \
@@ -98,7 +99,7 @@ async def user_choose_ha_image(message: types.Message, state: FSMContext):
 
     await message.answer(
         text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli yuborildi\n\n"
-             f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+             f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>", reply_markup=back_privatee)
 
 
 # <------------Adver with text------------->
@@ -144,7 +145,7 @@ async def choose_yes_no(call: types.CallbackQuery, state: FSMContext):
                 continue
         await call.message.answer(
             text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli yuborildi\n\n"
-                 f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+                 f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>", reply_markup=back_privatee)
 
     else:
         choose_text = "<b>Tugma qo'shmoqchi bo'lsangiz namunadagidek qilib yuboring👇\n\n" \
@@ -179,7 +180,7 @@ async def user_choose_ha_image(message: types.Message, state: FSMContext):
 
         await state.finish()
     await message.answer(text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli yuborildi\n\n"
-                                        f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+                                        f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>", reply_markup=back_privatee)
 
 # <------------Adver with video and text------------->
 @dp.callback_query_handler(text="withvideoprivate", state='*')
@@ -234,7 +235,7 @@ async def choose_yes_no_data(call: types.CallbackQuery, state: FSMContext):
                 continue
         await call.message.answer(
             text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli yuborildi\n\n"
-                 f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+                 f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>", reply_markup=back_privatee)
 
     else:
         choose_text = "<b>Tugma qo'shmoqchi bo'lsangiz namunadagidek qilib yuboring👇\n\n" \
@@ -271,4 +272,4 @@ async def user_choose_ha_image(message: types.Message, state: FSMContext):
 
     await message.answer(
         text=f"<b>✅ Reklama <i>{success_send}</i> ta foydalanuvchiga muvaffaqqiyatli yuborildi\n\n"
-             f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>")
+             f"❌ Reklama <i>{not_send}</i> ta foydalanuvchiga bormadi</b>", reply_markup=back_privatee)
