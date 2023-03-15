@@ -107,7 +107,7 @@ class Database:
         return await self.execute(sql, fetch=True)
 
     async def select_all_badwrods(self):
-        sql = "SELECT * FROM BadWords"
+        sql = "SELECT badword FROM BadWords"
         return await self.execute(sql, fetch=True)
 
     async def select_all_group(self):
@@ -128,9 +128,14 @@ class Database:
         sql = "SELECT COUNT(*) FROM Users"
         return await self.execute(sql, fetchval=True)
 
-    async def update_user_issubs(self, issubs, user_id):
-        sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
-        return await self.execute(sql, issubs, user_id, execute=True)
+    # async def update_user_issubs(self, issubs, user_id):
+    #     sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
+    #     return await self.execute(sql, issubs, user_id, execute=True)
+
+    async def update_group_id(self, chat_id):
+        sql = "UPDATE Admin SET chat_id=$1 WHERE chat_id=$2"
+        return await self.execute(sql, chat_id, execute=True)
+
 
     async def delete_user(self, user_id):
         sql = "DELETE FROM Users WHERE user_id=$1"

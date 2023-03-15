@@ -25,3 +25,24 @@ deleted_bad_word = InlineKeyboardMarkup(
         ]
     ]
 )
+
+
+bad_words_back_loading = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                    text="◀️ Orqaga", callback_data='bad_words_back_loading'
+                )
+        ]
+    ]
+)
+
+bad_words_back_succes = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                    text="◀️ Orqaga", callback_data='bad_words_back_succes'
+                )
+        ]
+    ]
+)

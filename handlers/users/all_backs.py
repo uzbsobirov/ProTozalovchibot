@@ -1,9 +1,11 @@
-from loader import dp
+from loader import dp, db
 from states.admin import Admin, SendingGroup, SendingUser
+from states.badwords import BadWords, DeleteBadWords
 from keyboards.inline.start import gold_start, elite_start
 from data.config import ADMINS
 from keyboards.inline.admin import admin
 from keyboards.inline.adv import type_sending, types_private, types_group
+from keyboards.inline.badwords import *
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -73,9 +75,13 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     user_id = call.from_user.id
 
-    text = "<b>Admin panelga xush kelibsiz👣</b>"
-    await call.message.edit_text(text=text, reply_markup=admin)
-    await Admin.main_admin.set()
+    result = ""
+    list_of_bad_words = await db.select_all_badwrods()
+    for b_word in list_of_bad_words:
+        result += f"{b_word[0]}, "
+    text = f"<b>Xaqoratli so'z qo'shish uchun yozing</b>\n\nBazadagi so'zlar: {result}"
+    await call.message.edit_text(text=text, reply_markup=deleted_bad_word)
+    await BadWords.word.set()
 
 @dp.callback_query_handler(text="bad_words_back_back", state='*')
 async def back_to_main(call: types.CallbackQuery, state: FSMContext):
@@ -100,3 +106,27 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     text = "<b>Kerakli reklama turini tanlang</b>"
     await call.message.edit_text(text=text, reply_markup=types_group)
     await SendingGroup.group.set()
+
+@dp.callback_query_handler(text="bad_words_back_loading", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    result = ""
+    list_of_bad_words = await db.select_all_badwrods()
+    for b_word in list_of_bad_words:
+        result += f"{b_word[0]}, "
+    text = f"<b>Xaqoratli so'z qo'shish uchun yozing</b>\n\nBazadagi so'zlar: {result}"
+    await call.message.edit_text(text=text, reply_markup=deleted_bad_word)
+    await DeleteBadWords.word.set()
+
+@dp.callback_query_handler(text="bad_words_back_succes", state='*')
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    result = ""
+    list_of_bad_words = await db.select_all_badwrods()
+    for b_word in list_of_bad_words:
+        result += f"{b_word[0]}, "
+    text = f"<b>Xaqoratli so'z qo'shish uchun yozing</b>\n\nBazadagi so'zlar: {result}"
+    await call.message.edit_text(text=text, reply_markup=deleted_bad_word)
+    await BadWords.word.set()

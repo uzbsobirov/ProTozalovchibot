@@ -11,3 +11,4 @@ async def check_is_admin(chat_id: Union[str, int]):
     bot = Bot.get_current()
     member = await bot.get_chat_administrators(chat_id=chat_id)
     return member
+
