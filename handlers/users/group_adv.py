@@ -1,7 +1,7 @@
 import asyncio
 from loader import db, dp, bot
 from states.group_adv import *
-from keyboards.inline.adv import yes_no_group, buttons, back_group
+from keyboards.inline.adv import *
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext

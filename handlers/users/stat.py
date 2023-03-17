@@ -16,6 +16,15 @@ async def static(call: types.CallbackQuery, state: FSMContext):
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
 
+    data = await state.get_data()
+    chat_id = data.get('chat_id')
+
+    # try:
+    #     await db.add_id_of_group(chat_id=chat_id)
+    # except Exception as error:
+    #     await db.update_group_id(chat_id=chat_id)
+    #     print(error)
+
     count = await db.count_users() # All users
     all_groups = await db.select_all_group() # Len of all groups
 

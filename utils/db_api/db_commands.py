@@ -65,7 +65,8 @@ class Database:
         sql = """
         CREATE TABLE IF NOT EXISTS Groups (
         id SERIAL PRIMARY KEY,
-        chat_id BigInt UNIQUE
+        chat_id BigInt UNIQUE,
+        link TEXT UNIQUE
         );
         """
         await self.execute(sql, execute=True)
@@ -98,9 +99,9 @@ class Database:
         sql = "INSERT INTO BadWords (badword) VALUES($1)"
         return await self.execute(sql, badword, fetchrow=True)
 
-    async def add_id_of_group(self, chat_id):
-        sql = "INSERT INTO Groups (chat_id) VALUES($1)"
-        return await self.execute(sql, chat_id, fetchrow=True)
+    async def add_id_of_group(self, chat_id, link):
+        sql = "INSERT INTO Groups (chat_id, link) VALUES($1, $2)"
+        return await self.execute(sql, chat_id, link, fetchrow=True)
 
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
@@ -132,9 +133,9 @@ class Database:
     #     sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
     #     return await self.execute(sql, issubs, user_id, execute=True)
 
-    async def update_group_id(self, chat_id):
-        sql = "UPDATE Admin SET chat_id=$1 WHERE chat_id=$2"
-        return await self.execute(sql, chat_id, execute=True)
+    async def update_group_id(self, chat_id, link):
+        sql = "UPDATE Groups SET chat_id=$1 WHERE link=$2"
+        return await self.execute(sql, chat_id, link, execute=True)
 
 
     async def delete_user(self, user_id):

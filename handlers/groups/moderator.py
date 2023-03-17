@@ -1,12 +1,13 @@
+import asyncio
 import datetime
 from aiogram.dispatcher import FSMContext
 from aiogram import types
 
-from loader import dp, db
+from loader import dp, db, bot
 from filters import IsGroup
 from utils.misc.subscription import check
 from data.config import ADMINS
-from keyboards.inline.start import elite_start
+from keyboards.inline.start import elite_start_group
 
 
 
@@ -17,6 +18,16 @@ async def deleteads(message: types.Message, state: FSMContext):
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
 
+    chat_id = message.chat.id
+    chat = await bot.get_chat(chat_id)
+    invite_link = await chat.export_invite_link()
+    try:
+
+        await db.add_id_of_group(chat_id=chat_id, link=invite_link)
+    except Exception as error:
+        await db.update_group_id(chat_id=chat_id, link=invite_link)
+        print(error)
+
     checking = await check(user_id=user_id, chat_id=chat_id) # We must check if user is admin in the group
 
     if checking is not True:
@@ -24,7 +35,9 @@ async def deleteads(message: types.Message, state: FSMContext):
             if entity.type in ['url', 'mention', 'text_link']:
                 await message.delete()
                 text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-                await message.answer(text=text, reply_markup=elite_start)
+                deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+                await asyncio.sleep(10)
+                await deleted_text.delete()
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا'
@@ -41,10 +54,12 @@ async def deleteads(message: types.Message, state: FSMContext):
     msg = message.text
     if user_id != ADMINS[0]:
         for word in list_of_insulting_words:
-            if msg in word[1]:
+            if msg in word[0]:
                 await message.delete()
                 text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
-                await message.answer(text=text, reply_markup=elite_start)
+                bad_text = await message.answer(text=text, reply_markup=elite_start_group)
+                await asyncio.sleep(10)
+                await bad_text.delete()
                 restriction_time = 5
                 until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
                 await message.chat.restrict(user_id=user_id,
@@ -72,4 +87,20 @@ async def deleteads(message: types.Message, state: FSMContext):
     if entity in types_of_message:
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-        await message.answer(text=text, reply_markup=elite_start)
+        deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+        await asyncio.sleep(10)
+        await deleted_text.delete()
+
+@dp.message_handler(IsGroup(), content_types=types.ContentType.VIDEO, state='*')
+async def deleteads(message: types.Message, state: FSMContext):
+    full_name = message.from_user.full_name  # Full name
+    user_mention = message.from_user.get_mention(name=full_name, as_html=True)  # User mention <a href=''></a>
+
+    types_of_message = ['url', 'mention', 'text_link']
+    entity = message['caption_entities'][0]['type']
+    if entity in types_of_message:
+        await message.delete()
+        text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+        deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+        await asyncio.sleep(10)
+        await deleted_text.delete()

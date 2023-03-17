@@ -56,7 +56,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         await message.answer(text=text_elite, reply_markup=elite_start)
 
 
-@dp.message_handler(IsPrivate(), state='*')
+@dp.message_handler(IsPrivate())
 async def deleted_message(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
 
