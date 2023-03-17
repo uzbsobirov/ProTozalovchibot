@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-url = "https://t.me/ProTozalovchibot?startgroup=on&admin=change_info+delete_messages+restrict_members+pin_messages+manage_video_chats+promote_members+invite_users"
+url = 'https://t.me/ProTozalovchibot?startgroup=new'
 
 gold_start = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -10,7 +10,7 @@ gold_start = InlineKeyboardMarkup(
             )
         ],
         [
-            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/ProTozalovchibot?startgroup=new')
+            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
         ],
         [
             InlineKeyboardButton(
@@ -28,7 +28,7 @@ elite_start = InlineKeyboardMarkup(
             )
         ],
         [
-            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/ProTozalovchibot?startgroup=new')
+            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
         ]
     ]
 )
@@ -41,9 +41,7 @@ elite_start_group = InlineKeyboardMarkup(
             )
         ],
         [
-            InlineKeyboardButton(
-                text="Ruxsat berish", callback_data='accsesswritegroup'
-            )
+            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
         ]
     ]
 )
