@@ -41,8 +41,8 @@ async def deleteads(message: types.Message, state: FSMContext):
             await message.delete()
             text = f"{chennel_mention} kanal nomidan yozmang!"
             deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-            await asyncio.sleep(10)
-            await deleted_text.delete()
+            # await asyncio.sleep(10)
+            # await deleted_text.delete()
 
         await state.finish()
     except:
@@ -66,8 +66,8 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.delete()
                 text = f"❗️{user_mention} iltimos reklama tarqatmang!"
                 deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-                await asyncio.sleep(10)
-                await deleted_text.delete()
+                # await asyncio.sleep(10)
+                # await deleted_text.delete()
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا'
@@ -88,8 +88,8 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.delete()
                 text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
                 bad_text = await message.answer(text=text, reply_markup=elite_start_group)
-                await asyncio.sleep(10)
-                await bad_text.delete()
+                # await asyncio.sleep(10)
+                # await bad_text.delete()
                 restriction_time = 5
                 until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
                 await message.chat.restrict(user_id=user_id,
@@ -118,8 +118,8 @@ async def deleteads(message: types.Message, state: FSMContext):
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
         deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        await asyncio.sleep(10)
-        await deleted_text.delete()
+        # await asyncio.sleep(10)
+        # await deleted_text.delete()
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.VIDEO, state='*')
 async def deleteads(message: types.Message, state: FSMContext):
@@ -132,8 +132,8 @@ async def deleteads(message: types.Message, state: FSMContext):
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
         deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        await asyncio.sleep(10)
-        await deleted_text.delete()
+        # await asyncio.sleep(10)
+        # await deleted_text.delete()
 
 # @dp.callback_query_handler(IsGroup(), text="accsesswritegroup", state='*')
 # async def access(call: types.CallbackQuery, state: FSMContext):
