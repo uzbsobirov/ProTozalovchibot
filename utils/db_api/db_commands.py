@@ -47,7 +47,8 @@ class Database:
         id SERIAL PRIMARY KEY,
         full_name VARCHAR(255) NOT NULL,
         username varchar(255) NULL,
-        user_id BIGINT NOT NULL UNIQUE
+        user_id BIGINT NOT NULL UNIQUE,
+        has_acsess TEXT 
         );
         """
         await self.execute(sql, execute=True)
@@ -87,9 +88,9 @@ class Database:
         )
         return sql, tuple(parameters.values())
 
-    async def add_user(self, full_name: str, username: str, user_id: int):
-        sql = "INSERT INTO users (full_name, username, user_id) VALUES($1, $2, $3) returning *"
-        return await self.execute(sql, full_name, username, user_id, fetchrow=True)
+    async def add_user(self, full_name: str, username: str, user_id: int, has_acsess: str):
+        sql = "INSERT INTO users (full_name, username, user_id, has_acsess) VALUES($1, $2, $3, $4) returning *"
+        return await self.execute(sql, full_name, username, user_id, has_acsess, fetchrow=True)
 
     async def add_word_to_adminpanel(self, word):
         sql = "INSERT INTO Admin (word) VALUES($1)"
@@ -137,6 +138,9 @@ class Database:
         sql = "UPDATE Groups SET chat_id=$1 WHERE link=$2"
         return await self.execute(sql, chat_id, link, execute=True)
 
+    # async def update_acsess_user(self, has_acsess, user_id):
+    #     sql = "UPDATE Groups SET has_acsess=$1 WHERE link=$2"
+    #     return await self.execute(sql, chat_id, link, execute=True)
 
     async def delete_user(self, user_id):
         sql = "DELETE FROM Users WHERE user_id=$1"

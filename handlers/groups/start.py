@@ -12,6 +12,16 @@ async def start_group(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     user_mention = message.from_user.get_mention(name=full_name, as_html=True)
 
+    try:
+        await db.add_user(
+            full_name=full_name,
+            username=username,
+            user_id=user_id,
+            has_acsess='false'
+        )
+    except:
+        pass
+
     chat_id = message.chat.id
     await state.update_data(
         {'chat_id': chat_id}

@@ -8,15 +8,45 @@ from filters import IsGroup
 from utils.misc.subscription import check
 from data.config import ADMINS
 from keyboards.inline.start import elite_start_group
-
+from states.group_adv import CheckAcsess
 
 
 @dp.message_handler(IsGroup(), state='*')
 async def deleteads(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name # Full name
     user_id = message.from_user.id # User id
+    username = message.from_user.username
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
+
+    try:
+        await db.add_user(
+            full_name=full_name,
+            username=username,
+            user_id=user_id,
+            has_acsess='false'
+        )
+    except:
+        pass
+
+    try:
+        await CheckAcsess.check.set()
+        is_channel = message['from']['username']
+        is_channel_double = message['from']['first_name']
+        channel_username = message['sender_chat']['username']
+        channel_name = message['sender_chat']['title']
+        chennel_mention = f"<a href='https://t.me/{channel_username}'>{channel_name}</a>"
+
+        if is_channel == 'Channel_Bot' or is_channel_double == 'Channel':
+            await message.delete()
+            text = f"{chennel_mention} kanal nomidan yozmang!"
+            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+            await asyncio.sleep(10)
+            await deleted_text.delete()
+
+        await state.finish()
+    except:
+        pass
 
     chat_id = message.chat.id
     chat = await bot.get_chat(chat_id)
@@ -104,3 +134,6 @@ async def deleteads(message: types.Message, state: FSMContext):
         deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
         await asyncio.sleep(10)
         await deleted_text.delete()
+
+# @dp.callback_query_handler(IsGroup(), text="accsesswritegroup", state='*')
+# async def access(call: types.CallbackQuery, state: FSMContext):

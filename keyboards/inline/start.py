@@ -39,6 +39,11 @@ elite_start_group = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text="➕ Guruhga Qo'shish", url=url
             )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Ruxsat berish", callback_data='accsesswritegroup'
+            )
         ]
     ]
 )

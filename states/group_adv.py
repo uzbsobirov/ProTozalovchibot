@@ -16,3 +16,6 @@ class GVideo(StatesGroup):
     text = State()
     choose_yes_no = State()
     choose_yes = State()
+
+class CheckAcsess(StatesGroup):
+    check = State()

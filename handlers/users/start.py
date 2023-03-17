@@ -24,7 +24,8 @@ async def bot_start(message: types.Message, state: FSMContext):
         await db.add_user(
             full_name=full_name,
             username=username,
-            user_id=user_id
+            user_id=user_id,
+            has_acsess='false'
         )
 
         # About message to ADMIN
