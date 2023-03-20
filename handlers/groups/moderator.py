@@ -18,6 +18,21 @@ async def deleteads(message: types.Message, state: FSMContext):
     username = message.from_user.username
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
+    print(chat_id)
+
+
+    try:
+        chat = await bot.get_chat(chat_id)
+        invite_link = await chat.export_invite_link()
+        await db.add_id_of_group(chat_id=chat_id, link=invite_link)
+    except Exception as error:
+        chat = await bot.get_chat(chat_id)
+        invite_link = await chat.export_invite_link()
+        await db.update_group_id(chat_id=chat_id)
+        print(error)
+
+    checking = await check(user_id=user_id, chat_id=chat_id)  # We must check if user is admin in the group
+
 
     try:
         await db.add_user(
@@ -28,6 +43,8 @@ async def deleteads(message: types.Message, state: FSMContext):
         )
     except:
         pass
+
+
 
     try:
         await CheckAcsess.check.set()
@@ -41,24 +58,14 @@ async def deleteads(message: types.Message, state: FSMContext):
             await message.delete()
             text = f"{chennel_mention} kanal nomidan yozmang!"
             deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-            # await asyncio.sleep(10)
-            # await deleted_text.delete()
+            await asyncio.sleep(10)
+            await deleted_text.delete()
 
         await state.finish()
     except:
         pass
 
-    chat_id = message.chat.id
-    chat = await bot.get_chat(chat_id)
-    invite_link = await chat.export_invite_link()
-    try:
 
-        await db.add_id_of_group(chat_id=chat_id, link=invite_link)
-    except Exception as error:
-        await db.update_group_id(chat_id=chat_id, link=invite_link)
-        print(error)
-
-    checking = await check(user_id=user_id, chat_id=chat_id) # We must check if user is admin in the group
 
     if checking is not True:
         for entity in message.entities:
@@ -66,8 +73,8 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.delete()
                 text = f"❗️{user_mention} iltimos reklama tarqatmang!"
                 deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-                # await asyncio.sleep(10)
-                # await deleted_text.delete()
+                await asyncio.sleep(10)
+                await deleted_text.delete()
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا'
@@ -88,8 +95,8 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.delete()
                 text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
                 bad_text = await message.answer(text=text, reply_markup=elite_start_group)
-                # await asyncio.sleep(10)
-                # await bad_text.delete()
+                await asyncio.sleep(10)
+                await bad_text.delete()
                 restriction_time = 5
                 until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
                 await message.chat.restrict(user_id=user_id,
@@ -98,12 +105,14 @@ async def deleteads(message: types.Message, state: FSMContext):
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
 async def new_member(message: types.Message, state: FSMContext):
+
     # If New User join to group, we should delete message of user
     await message.delete()
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.LEFT_CHAT_MEMBER, state='*')
 async def banned_member(message: types.Message, state: FSMContext):
+
     # If New User left to group, we should delete message of user
     await message.delete()
 
@@ -118,13 +127,14 @@ async def deleteads(message: types.Message, state: FSMContext):
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
         deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        # await asyncio.sleep(10)
-        # await deleted_text.delete()
+        await asyncio.sleep(10)
+        await deleted_text.delete()
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.VIDEO, state='*')
 async def deleteads(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name  # Full name
     user_mention = message.from_user.get_mention(name=full_name, as_html=True)  # User mention <a href=''></a>
+
 
     types_of_message = ['url', 'mention', 'text_link']
     entity = message['caption_entities'][0]['type']
@@ -132,8 +142,8 @@ async def deleteads(message: types.Message, state: FSMContext):
         await message.delete()
         text = f"❗️{user_mention} iltimos reklama tarqatmang!"
         deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        # await asyncio.sleep(10)
-        # await deleted_text.delete()
+        await asyncio.sleep(10)
+        await deleted_text.delete()
 
 # @dp.callback_query_handler(IsGroup(), text="accsesswritegroup", state='*')
 # async def access(call: types.CallbackQuery, state: FSMContext):

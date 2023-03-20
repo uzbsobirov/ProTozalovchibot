@@ -28,15 +28,8 @@ async def bot_start(message: types.Message, state: FSMContext):
             has_acsess='false'
         )
 
-        # About message to ADMIN
-        msg = f"{user_mention} [<code>{user_id}</code>] bazaga qo'shildi."
-        await bot.send_message(chat_id=ADMINS[0], text=msg)
-
-
-
     except:
-        await bot.send_message(chat_id=ADMINS[0], text=f"{user_mention} [<code>{user_id}</code>] "
-                                                     f"bazaga oldin qo'shilgan")
+        pass
 
 
 

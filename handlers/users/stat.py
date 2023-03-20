@@ -30,10 +30,22 @@ async def static(call: types.CallbackQuery, state: FSMContext):
 
     all_users = 0
     for chat_id in all_groups:
-        checking = await check(chat_id=chat_id[1])
-        all_users += checking
+        try:
+            checking = await check(chat_id=chat_id[1])
+            all_users += checking
+        except:
+            pass
 
-    text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
-    f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {len(all_groups)}\n🫂 Guruh obunachilar: {all_users}" \
-    f"\n👤Barcha obunachilar: {count+len(all_groups)}</b>"
-    await call.message.edit_text(text=text, reply_markup=back_stat)
+    kick_chat = 0
+    try:
+        text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
+               f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {len(all_groups)}\n🫂 Guruh obunachilar: {all_users}" \
+               f"\n👤Barcha obunachilar: {count + len(all_groups)}</b>"
+        await call.message.edit_text(text=text, reply_markup=back_stat)
+    except:
+        kick_chat += 1
+        worked_groups = all_groups - kick_chat
+        text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
+               f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {worked_groups}\n🫂 Guruh obunachilar: {all_users}" \
+               f"\n👤Barcha obunachilar: {count + worked_groups}</b>"
+        await call.message.edit_text(text=text, reply_markup=back_stat)

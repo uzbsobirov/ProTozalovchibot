@@ -112,6 +112,10 @@ class Database:
         sql = "SELECT badword FROM BadWords"
         return await self.execute(sql, fetch=True)
 
+    # async def select_on_off(self, chat_id):
+    #     sql = "SELECT on_off FROM Groups WHERE chat_id=$1"
+    #     return await self.execute(sql, chat_id, fetch=True)
+
     async def select_all_group(self):
         sql = "SELECT * FROM Groups"
         return await self.execute(sql, fetch=True)
@@ -130,13 +134,13 @@ class Database:
         sql = "SELECT COUNT(*) FROM Users"
         return await self.execute(sql, fetchval=True)
 
-    # async def update_user_issubs(self, issubs, user_id):
-    #     sql = "UPDATE Users SET issubs=$1 WHERE user_id=$2"
-    #     return await self.execute(sql, issubs, user_id, execute=True)
+    async def update_bot_on_off(self, on_off, chat_id):
+        sql = "UPDATE Groups SET on_off=$1 WHERE chat_id=$2"
+        return await self.execute(sql, on_off, chat_id, execute=True)
 
-    async def update_group_id(self, chat_id, link):
-        sql = "UPDATE Groups SET chat_id=$1 WHERE link=$2"
-        return await self.execute(sql, chat_id, link, execute=True)
+    async def update_group_id(self, chat_id):
+        sql = "UPDATE Groups SET chat_id=$1 WHERE chat_id=$1"
+        return await self.execute(sql, chat_id, execute=True)
 
     # async def update_acsess_user(self, has_acsess, user_id):
     #     sql = "UPDATE Groups SET has_acsess=$1 WHERE link=$2"

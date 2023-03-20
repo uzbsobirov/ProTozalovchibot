@@ -26,14 +26,16 @@ async def start_group(message: types.Message, state: FSMContext):
     await state.update_data(
         {'chat_id': chat_id}
     )
-    chat_id = message.chat.id
-    chat = await bot.get_chat(chat_id)
-    invite_link = await chat.export_invite_link()
-    try:
 
+    try:
+        chat_id = message.chat.id
+        chat = await bot.get_chat(chat_id)
+        invite_link = await chat.export_invite_link()
         await db.add_id_of_group(chat_id=chat_id, link=invite_link)
     except Exception as error:
-        await db.update_group_id(chat_id=chat_id, link=invite_link)
+        chat_id = message.chat.id
+        chat = await bot.get_chat(chat_id)
+        await db.update_group_id(chat_id=chat_id)
         print(error)
 
 
