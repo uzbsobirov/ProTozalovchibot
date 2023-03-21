@@ -103,14 +103,20 @@ async def deleteads(message: types.Message, state: FSMContext):
 async def new_member(message: types.Message, state: FSMContext):
 
     # If New User join to group, we should delete message of user
-    await message.delete()
+    try:
+        await message.delete()
+    except:
+        pass
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.LEFT_CHAT_MEMBER, state='*')
 async def banned_member(message: types.Message, state: FSMContext):
 
     # If New User left to group, we should delete message of user
-    await message.delete()
+    try:
+        await message.delete()
+    except:
+        pass
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.PHOTO, state='*')
 async def deleteads(message: types.Message, state: FSMContext):
