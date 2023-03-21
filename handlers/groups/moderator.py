@@ -18,7 +18,6 @@ async def deleteads(message: types.Message, state: FSMContext):
     username = message.from_user.username
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
-    print(chat_id)
 
 
     try:
@@ -44,8 +43,6 @@ async def deleteads(message: types.Message, state: FSMContext):
     except:
         pass
 
-
-
     try:
         await CheckAcsess.check.set()
         is_channel = message['from']['username']
@@ -58,13 +55,12 @@ async def deleteads(message: types.Message, state: FSMContext):
             await message.delete()
             text = f"{chennel_mention} kanal nomidan yozmang!"
             deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-            await asyncio.sleep(10)
-            await deleted_text.delete()
+            # await asyncio.sleep(10)
+            # await deleted_text.delete()
 
         await state.finish()
     except:
         pass
-
 
 
     if checking is not True:
@@ -73,30 +69,30 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.delete()
                 text = f"❗️{user_mention} iltimos reklama tarqatmang!"
                 deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-                await asyncio.sleep(10)
-                await deleted_text.delete()
+                # await asyncio.sleep(10)
+                # await deleted_text.delete()
 
     # List of arabian letter
-    list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا'
-                                                                                        , 'م', 'ذ', 'ذ', 'ل', 'أ']
-    for item in list_of_arab_words:
-        if item in message.text:
-            await message.delete()
-            await message.chat.kick(user_id=user_id)
-            break
+    list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا', 'م', 'ذ', 'ذ', 'ل', 'أ']
+    if checking is not  True:
+        for item in list_of_arab_words:
+            if item in message.text:
+                await message.delete()
+                await message.chat.kick(user_id=user_id)
+                break
 
 
 
     list_of_insulting_words = await db.select_all_badwrods()
     msg = message.text
-    if user_id != ADMINS[0]:
+    if checking is not True:
         for word in list_of_insulting_words:
             if msg in word[0]:
                 await message.delete()
                 text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
                 bad_text = await message.answer(text=text, reply_markup=elite_start_group)
-                await asyncio.sleep(10)
-                await bad_text.delete()
+                # await asyncio.sleep(10)
+                # await bad_text.delete()
                 restriction_time = 5
                 until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
                 await message.chat.restrict(user_id=user_id,
@@ -121,29 +117,35 @@ async def deleteads(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name # Full name
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
 
-    types_of_message = ['url', 'mention', 'text_link']
-    entity = message['caption_entities'][0]['type']
-    if entity in types_of_message:
-        await message.delete()
-        text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-        deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        await asyncio.sleep(10)
-        await deleted_text.delete()
+    user_id = message.from_user.id
+    chat_id = message.chat.id  # Group id
+    checking = await check(user_id=user_id, chat_id=chat_id)
+
+    if checking is not True:
+        types_of_message = ['url', 'mention', 'text_link']
+        entity = message['caption_entities'][0]['type']
+        if entity in types_of_message:
+            await message.delete()
+            text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+            # await asyncio.sleep(10)
+            # await deleted_text.delete()
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.VIDEO, state='*')
 async def deleteads(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name  # Full name
     user_mention = message.from_user.get_mention(name=full_name, as_html=True)  # User mention <a href=''></a>
+    user_id = message.from_user.id
+    chat_id = message.chat.id  # Group id
+    checking = await check(user_id=user_id, chat_id=chat_id)
 
+    if checking is not True:
+        types_of_message = ['url', 'mention', 'text_link']
+        entity = message['caption_entities'][0]['type']
+        if entity in types_of_message:
+            await message.delete()
+            text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+            # await asyncio.sleep(10)
+            # await deleted_text.delete()
 
-    types_of_message = ['url', 'mention', 'text_link']
-    entity = message['caption_entities'][0]['type']
-    if entity in types_of_message:
-        await message.delete()
-        text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-        deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-        await asyncio.sleep(10)
-        await deleted_text.delete()
-
-# @dp.callback_query_handler(IsGroup(), text="accsesswritegroup", state='*')
-# async def access(call: types.CallbackQuery, state: FSMContext):

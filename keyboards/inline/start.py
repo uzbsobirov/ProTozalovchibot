@@ -39,9 +39,6 @@ elite_start_group = InlineKeyboardMarkup(
             InlineKeyboardButton(
                 text="➕ Guruhga Qo'shish", url=url
             )
-        ],
-        [
-            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
         ]
     ]
 )

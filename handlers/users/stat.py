@@ -19,11 +19,7 @@ async def static(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     chat_id = data.get('chat_id')
 
-    # try:
-    #     await db.add_id_of_group(chat_id=chat_id)
-    # except Exception as error:
-    #     await db.update_group_id(chat_id=chat_id)
-    #     print(error)
+
 
     count = await db.count_users() # All users
     all_groups = await db.select_all_group() # Len of all groups
@@ -40,12 +36,12 @@ async def static(call: types.CallbackQuery, state: FSMContext):
     try:
         text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
                f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {len(all_groups)}\n🫂 Guruh obunachilar: {all_users}" \
-               f"\n👤Barcha obunachilar: {count + len(all_groups)}</b>"
+               f"\n👤Barcha obunachilar: {count + all_users}</b>"
         await call.message.edit_text(text=text, reply_markup=back_stat)
     except:
         kick_chat += 1
         worked_groups = all_groups - kick_chat
         text = f"<b>📆 Bugunki sana: {todays_date}\n🕰 Hozirgi vaqt: {current_time}\n\n" \
                f"📊 Bot obunachilari: {count}\n👥 Guruhlar soni: {worked_groups}\n🫂 Guruh obunachilar: {all_users}" \
-               f"\n👤Barcha obunachilar: {count + worked_groups}</b>"
+               f"\n👤Barcha obunachilar: {count + all_users}</b>"
         await call.message.edit_text(text=text, reply_markup=back_stat)
