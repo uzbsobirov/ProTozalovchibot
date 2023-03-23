@@ -48,6 +48,21 @@ async def deleteads(message: types.Message, state: FSMContext):
     except:
         pass
 
+    select_is_added = await db.select_add_member(user_id=user_id)
+    number_is_added = select_is_added[0][0]
+    select_members = await db.select_many_member()
+    print(select_members)
+
+    try:
+        if number_is_added < select_members:
+            await message.delete()
+            text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {select_members} ta odam qo'shing!</b>"
+            await message.answer(text=text)
+    except Exception as err:
+        print(err)
+        pass
+
+
     try:
         await CheckAcsess.check.set()
         is_channel = message['from']['username']
@@ -106,13 +121,30 @@ async def deleteads(message: types.Message, state: FSMContext):
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
 async def new_member(message: types.Message, state: FSMContext):
-    print(message.new_chat_members)
-    print(len(message.new_chat_members))
     # If New User join to group, we should delete message of user
     try:
         await message.delete()
     except:
         pass
+
+    user_id = message.from_user.id
+    length_members = len(message.new_chat_members)
+
+    new_chat_members = message.new_chat_members
+
+    for new_chat_member in new_chat_members:
+        full_name = new_chat_member.full_name
+        new_user_id = new_chat_member.id
+        user_mention = f"<a href='tg://user?id={new_user_id}'>{full_name}</a>"
+        text = f"<b>Xush kelibsiz {user_mention}</b>"
+        await message.answer(text=text)
+
+    select_is_added = await db.select_add_member(user_id=user_id)
+    number_is_added = select_is_added[0][0]
+    number_is_added += length_members
+    await db.update_add_member(user_id=user_id, is_added=number_is_added)
+
+
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.LEFT_CHAT_MEMBER, state='*')

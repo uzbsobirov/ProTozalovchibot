@@ -57,7 +57,8 @@ class Database:
         sql = """
         CREATE TABLE IF NOT EXISTS Admin (
         id SERIAL PRIMARY KEY,
-        word TEXT UNIQUE
+        word TEXT UNIQUE,
+        members BigInt
         );
         """
         await self.execute(sql, execute=True)
@@ -122,6 +123,10 @@ class Database:
         sql = "SELECT * FROM Users"
         return await self.execute(sql, fetch=True)
 
+    async def select_many_member(self):
+        sql = "SELECT members FROM Admin"
+        return await self.execute(sql, fetch=True)
+
     async def select_all_badwrods(self):
         sql = "SELECT badword FROM BadWords"
         return await self.execute(sql, fetch=True)
@@ -138,6 +143,10 @@ class Database:
         sql = "SELECT * FROM Users WHERE user_id=$1"
         return await self.execute(sql, user_id, fetch=True)
 
+    async def select_add_member(self, user_id):
+        sql = "SELECT is_added FROM AddMember WHERE user_id=$1"
+        return await self.execute(sql, user_id, fetch=True)
+
 
     async def select_user(self, **kwargs):
         sql = "SELECT * FROM Users WHERE "
@@ -151,6 +160,10 @@ class Database:
     async def update_bot_on_off(self, on_off, chat_id):
         sql = "UPDATE Groups SET on_off=$1 WHERE chat_id=$2"
         return await self.execute(sql, on_off, chat_id, execute=True)
+
+    async def update_add_member(self, is_added, user_id):
+        sql = "UPDATE AddMember SET is_added=$1 WHERE user_id=$2"
+        return await self.execute(sql, is_added, user_id, execute=True)
 
     async def update_group_id(self, chat_id):
         sql = "UPDATE Groups SET chat_id=$1 WHERE chat_id=$1"
