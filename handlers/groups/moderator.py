@@ -19,6 +19,11 @@ async def deleteads(message: types.Message, state: FSMContext):
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
 
+    # Add user id and how many member added to chat
+    try:
+        await db.add_id_to_addmember(user_id=user_id, is_added=0)
+    except:
+        pass
 
     try:
         chat = await bot.get_chat(chat_id)
@@ -74,7 +79,7 @@ async def deleteads(message: types.Message, state: FSMContext):
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا', 'م', 'ذ', 'ذ', 'ل', 'أ']
-    if checking is not  True:
+    if checking is not True:
         for item in list_of_arab_words:
             if item in message.text:
                 await message.delete()
@@ -101,7 +106,8 @@ async def deleteads(message: types.Message, state: FSMContext):
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
 async def new_member(message: types.Message, state: FSMContext):
-
+    print(message.new_chat_members)
+    print(len(message.new_chat_members))
     # If New User join to group, we should delete message of user
     try:
         await message.delete()

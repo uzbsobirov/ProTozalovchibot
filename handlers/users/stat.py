@@ -6,7 +6,7 @@ from states.admin import Admin
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 # This handler for statics of bot
 @dp.callback_query_handler(text="stat", state='*')

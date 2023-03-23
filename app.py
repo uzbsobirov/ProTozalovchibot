@@ -12,6 +12,7 @@ async def on_startup(dispatcher):
     await db.create_table_admin()
     await db.create_table_groups()
     await db.create_table_bad_words()
+    await db.create_table_is_added()
 
     # Birlamchi komandalar (/start va /help)
     await set_default_commands(dispatcher)

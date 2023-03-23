@@ -81,6 +81,16 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
+    async def create_table_is_added(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS AddMember (
+        id SERIAL PRIMARY KEY,
+        user_id BigInt UNIQUE NOT NULL,
+        is_added BigInt
+        );
+        """
+        await self.execute(sql, execute=True)
+
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join(
@@ -95,6 +105,10 @@ class Database:
     async def add_word_to_adminpanel(self, word):
         sql = "INSERT INTO Admin (word) VALUES($1)"
         return await self.execute(sql, word, fetchrow=True)
+
+    async def add_id_to_addmember(self, user_id, is_added):
+        sql = "INSERT INTO AddMember (user_id, is_added) VALUES($1, $2)"
+        return await self.execute(sql, user_id, is_added, fetchrow=True)
 
     async def add_word_to_bad_word(self, badword):
         sql = "INSERT INTO BadWords (badword) VALUES($1)"
