@@ -103,9 +103,9 @@ class Database:
         sql = "INSERT INTO users (full_name, username, user_id, has_acsess) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, full_name, username, user_id, has_acsess, fetchrow=True)
 
-    async def add_word_to_adminpanel(self, word):
-        sql = "INSERT INTO Admin (word) VALUES($1)"
-        return await self.execute(sql, word, fetchrow=True)
+    async def add_members_to_adminpanel(self, members):
+        sql = "INSERT INTO Admin (members) VALUES($1)"
+        return await self.execute(sql, members, fetchrow=True)
 
     async def add_id_to_addmember(self, user_id, is_added):
         sql = "INSERT INTO AddMember (user_id, is_added) VALUES($1, $2)"
@@ -160,6 +160,10 @@ class Database:
     async def update_bot_on_off(self, on_off, chat_id):
         sql = "UPDATE Groups SET on_off=$1 WHERE chat_id=$2"
         return await self.execute(sql, on_off, chat_id, execute=True)
+
+    async def update_add_members(self, members):
+        sql = "UPDATE Admin SET members=$1 WHERE id=1"
+        return await self.execute(sql, members, execute=True)
 
     async def update_add_member(self, is_added, user_id):
         sql = "UPDATE AddMember SET is_added=$1 WHERE user_id=$2"

@@ -7,8 +7,7 @@ admin = InlineKeyboardMarkup(
             InlineKeyboardButton(text="🗞 Xabar yuborish", callback_data='send_message')
         ],
         [
-            InlineKeyboardButton(text="🚷 Xoqaratli so'zlar", callback_data='bad_words'),
-            InlineKeyboardButton(text="🔫 Majburiy odam qo'shish", callback_data='add_member')
+            InlineKeyboardButton(text="🚷 Xoqaratli so'zlar", callback_data='bad_words')
         ],
         [
             InlineKeyboardButton(text="◀️ Orqaga", callback_data='back_to_menu')

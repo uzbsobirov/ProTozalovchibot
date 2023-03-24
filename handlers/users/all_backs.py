@@ -6,6 +6,7 @@ from data.config import ADMINS
 from keyboards.inline.admin import admin
 from keyboards.inline.adv import type_sending, types_private, types_group
 from keyboards.inline.badwords import *
+from states.add_member import AddMember
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -130,3 +131,11 @@ async def back_to_main(call: types.CallbackQuery, state: FSMContext):
     text = f"<b>Xaqoratli so'z qo'shish uchun yozing</b>\n\nBazadagi so'zlar: {result}"
     await call.message.edit_text(text=text, reply_markup=deleted_bad_word)
     await BadWords.word.set()
+
+@dp.callback_query_handler(text="stat_back", state=AddMember.number)
+async def back_to_main(call: types.CallbackQuery, state: FSMContext):
+    user_id = call.from_user.id
+
+    text = "<b>Admin panelga xush kelibsiz👣</b>"
+    await call.message.edit_text(text=text, reply_markup=admin)
+    await Admin.main_admin.set()

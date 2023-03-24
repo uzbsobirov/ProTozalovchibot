@@ -9,4 +9,3 @@ from . import intousers
 from . import private_adv
 from . import group_adv
 from . import bad_words
-from . import add_member

@@ -48,18 +48,38 @@ async def deleteads(message: types.Message, state: FSMContext):
     except:
         pass
 
+    # Majburiy odam qoshish
+
+
+    if checking is True:
+        try:
+            text = message.text
+            splited = text.split(' ')
+            number = splited[1]
+            if '/add' in text and len(splited) == 2:
+                selection = await db.select_many_member()
+                if len(selection) == 0:
+                    await db.add_members_to_adminpanel(members=int(number))
+                else:
+                    await db.update_add_members(members=int(number))
+                await message.answer(text=f"Majburiy a'zo {number} ga o'zgardi✅\n\nGuruh azolari guruhda yozish "
+                                          f"uchun {number} ta odam qo'shishlari shart")
+        except:
+            pass
+
+    # <-------------------------->
+
     select_is_added = await db.select_add_member(user_id=user_id)
     number_is_added = select_is_added[0][0]
     select_members = await db.select_many_member()
-    print(select_members)
-
-    try:
-        if number_is_added < select_members:
-            await message.delete()
-            text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {select_members} ta odam qo'shing!</b>"
-            await message.answer(text=text)
-    except Exception as err:
-        print(err)
+    if checking is not True:
+        try:
+            if number_is_added < select_members[0][0]:
+                await message.delete()
+                text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {select_members[0][0]} ta odam qo'shing!</b>"
+                await message.answer(text=text)
+        except Exception as err:
+            print(err)
         pass
 
 
