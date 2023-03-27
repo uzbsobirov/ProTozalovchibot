@@ -68,7 +68,7 @@ async def deleteads(message: types.Message, state: FSMContext):
                     await db.update_power(power='add', chat_id=chat_id)
                 await message.answer(text=f"Majburiy a'zo {number} ga o'zgardi✅\n\nGuruh azolari guruhda yozish "
                                           f"uchun {number} ta odam qo'shishlari shart")
-            elif len(splited) == 2 and '/off @ProTozalovchibot' in text:
+            elif len(splited) == 2 and '/off @protozalovchibot' in text.lower():
                 await db.update_power(power='off', chat_id=chat_id)
                 await message.answer(text="Majburiy azolik o'chirildi✅", reply_markup=elite_start_group)
 

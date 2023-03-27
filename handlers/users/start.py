@@ -30,12 +30,14 @@ async def bot_start(message: types.Message, state: FSMContext):
     except:
         pass
 
-
-    text_elite = "<b>👮🏻‍♂GURUH - da sizga yordam beraman 👇\n\n🖇 - Reklama havolalarini tozalayman\n" \
-           "🚫 - Spam xabarlarni tozalayman\n🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - " \
-           "Arab botlardan ximoya qilaman\n🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman" \
-           "\n🔞 - So‘kinganlarni 5 minut faqat o'qish rejimiga tushuraman\n\n❗️Men to‘liq ishlashim uchun ADMIN " \
-           "qilib tayinlashingiz kerak</b>"
+    text_elite = "<b>@ProTozalovchibot - da sizga yordam beraman 👇\n\n" \
+           "🖇 - Reklama havolalarini tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
+           "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
+           "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
+           "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
+           "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
+           "<code>/off @ProTozalovchibot</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
+           "❗️Men to‘liq ishlashim uchun ADMIN qilib tayinlashingiz kerak</b>"
 
 
 
