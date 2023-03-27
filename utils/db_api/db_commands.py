@@ -58,7 +58,9 @@ class Database:
         CREATE TABLE IF NOT EXISTS Admin (
         id SERIAL PRIMARY KEY,
         word TEXT UNIQUE,
-        members BigInt
+        members BigInt,
+        power TEXT,
+        chat_id BigInt
         );
         """
         await self.execute(sql, execute=True)
@@ -103,9 +105,9 @@ class Database:
         sql = "INSERT INTO users (full_name, username, user_id, has_acsess) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, full_name, username, user_id, has_acsess, fetchrow=True)
 
-    async def add_members_to_adminpanel(self, members):
-        sql = "INSERT INTO Admin (members) VALUES($1)"
-        return await self.execute(sql, members, fetchrow=True)
+    async def add_members_to_adminpanel(self, members, chat_id, power):
+        sql = "INSERT INTO Admin (members, chat_id, power) VALUES($1, $2, $3)"
+        return await self.execute(sql, members, chat_id, power, fetchrow=True)
 
     async def add_id_to_addmember(self, user_id, is_added):
         sql = "INSERT INTO AddMember (user_id, is_added) VALUES($1, $2)"
@@ -124,7 +126,7 @@ class Database:
         return await self.execute(sql, fetch=True)
 
     async def select_many_member(self):
-        sql = "SELECT members FROM Admin"
+        sql = "SELECT members, chat_id, power FROM Admin"
         return await self.execute(sql, fetch=True)
 
     async def select_all_badwrods(self):
@@ -161,9 +163,13 @@ class Database:
         sql = "UPDATE Groups SET on_off=$1 WHERE chat_id=$2"
         return await self.execute(sql, on_off, chat_id, execute=True)
 
-    async def update_add_members(self, members):
-        sql = "UPDATE Admin SET members=$1 WHERE id=1"
-        return await self.execute(sql, members, execute=True)
+    async def update_power(self, power, chat_id):
+        sql = "UPDATE Admin SET power=$1 WHERE chat_id=$2"
+        return await self.execute(sql, power, chat_id, execute=True)
+
+    async def update_add_members(self, members, chat_id):
+        sql = "UPDATE Admin SET members=$1 WHERE chat_id=$2"
+        return await self.execute(sql, members, chat_id, execute=True)
 
     async def update_add_member(self, is_added, user_id):
         sql = "UPDATE AddMember SET is_added=$1 WHERE user_id=$2"

@@ -6,7 +6,7 @@ from aiogram import types
 from loader import dp, db, bot
 from filters import IsGroup
 from utils.misc.subscription import check
-from data.config import ADMINS
+from keyboards.inline.start import elite_start
 from keyboards.inline.start import elite_start_group
 from states.group_adv import CheckAcsess
 
@@ -57,14 +57,23 @@ async def deleteads(message: types.Message, state: FSMContext):
             splited = text.split(' ')
             number = splited[1]
             if '/add' in text and len(splited) == 2:
+                print('jelds')
                 selection = await db.select_many_member()
                 if len(selection) == 0:
-                    await db.add_members_to_adminpanel(members=int(number))
+                    print('dsd')
+                    await db.add_members_to_adminpanel(members=int(number), chat_id=chat_id, power='add')
                 else:
-                    await db.update_add_members(members=int(number))
+                    print('dsds')
+                    await db.update_add_members(members=int(number), chat_id=chat_id)
+                    await db.update_power(power='add', chat_id=chat_id)
                 await message.answer(text=f"Majburiy a'zo {number} ga o'zgardi✅\n\nGuruh azolari guruhda yozish "
                                           f"uchun {number} ta odam qo'shishlari shart")
-        except:
+            elif len(splited) == 2 and '/off @ProTozalovchibot' in text:
+                await db.update_power(power='off', chat_id=chat_id)
+                await message.answer(text="Majburiy azolik o'chirildi✅", reply_markup=elite_start_group)
+
+        except Exception as err:
+            print(err)
             pass
 
     # <-------------------------->
@@ -72,15 +81,19 @@ async def deleteads(message: types.Message, state: FSMContext):
     select_is_added = await db.select_add_member(user_id=user_id)
     number_is_added = select_is_added[0][0]
     select_members = await db.select_many_member()
-    if checking is not True:
-        try:
-            if number_is_added < select_members[0][0]:
-                await message.delete()
-                text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {select_members[0][0]} ta odam qo'shing!</b>"
-                await message.answer(text=text)
-        except Exception as err:
-            print(err)
-        pass
+    if chat_id == select_members[0][1]:
+        if select_members[0][2] == 'add':
+            if checking is not True:
+                try:
+                    if number_is_added < select_members[0][0]:
+
+                        ed = select_members[0][0] - number_is_added
+                        text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {ed} ta odam qo'shing!</b>"
+                        await message.answer(text=text, reply_markup=elite_start)
+                        await message.delete()
+                except Exception as err:
+                    print(err)
+                pass
 
 
     try:
@@ -128,15 +141,18 @@ async def deleteads(message: types.Message, state: FSMContext):
     if checking is not True:
         for word in list_of_insulting_words:
             if msg in word[0]:
-                await message.delete()
-                text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
-                bad_text = await message.answer(text=text, reply_markup=elite_start_group)
-                # await asyncio.sleep(10)
-                # await bad_text.delete()
-                restriction_time = 5
-                until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
-                await message.chat.restrict(user_id=user_id,
-                                               can_send_messages=False, until_date=until_date)
+                try:
+                    await message.delete()
+                    text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
+                    bad_text = await message.answer(text=text, reply_markup=elite_start_group)
+                    # await asyncio.sleep(10)
+                    # await bad_text.delete()
+                    restriction_time = 5
+                    until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
+                    await message.chat.restrict(user_id=user_id,
+                                                can_send_messages=False, until_date=until_date)
+                except:
+                    pass
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
