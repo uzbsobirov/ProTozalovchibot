@@ -35,7 +35,7 @@ async def start_group(message: types.Message, state: FSMContext):
     except Exception as error:
         chat_id = message.chat.id
         await db.update_group_id(chat_id=chat_id)
-        print(error)
+        print(f"{error} -- groups/start.py -> 38")
 
 
     bot_is = await check_is_admin(chat_id=chat_id)

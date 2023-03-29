@@ -33,7 +33,7 @@ async def deleteads(message: types.Message, state: FSMContext):
         chat = await bot.get_chat(chat_id)
         invite_link = await chat.export_invite_link()
         await db.update_group_id(chat_id=chat_id)
-        print(error)
+        print(f"{error} -- groups/moderator/py -> 36")
 
     checking = await check(user_id=user_id, chat_id=chat_id)  # We must check if user is admin in the group
 
@@ -55,25 +55,22 @@ async def deleteads(message: types.Message, state: FSMContext):
         try:
             text = message.text
             splited = text.split(' ')
-            number = splited[1]
+            args = message.get_args()
             if '/add' in text and len(splited) == 2:
-                print('jelds')
                 selection = await db.select_many_member()
                 if len(selection) == 0:
-                    print('dsd')
-                    await db.add_members_to_adminpanel(members=int(number), chat_id=chat_id, power='add')
+                    await db.add_members_to_adminpanel(members=int(args), chat_id=chat_id, power='add')
                 else:
-                    print('dsds')
-                    await db.update_add_members(members=int(number), chat_id=chat_id)
+                    await db.update_add_members(members=int(args), chat_id=chat_id)
                     await db.update_power(power='add', chat_id=chat_id)
-                await message.answer(text=f"Majburiy a'zo {number} ga o'zgardi✅\n\nGuruh azolari guruhda yozish "
-                                          f"uchun {number} ta odam qo'shishlari shart")
+                await message.answer(text=f"Majburiy a'zo {args} ga o'zgardi✅\n\nGuruh azolari guruhda yozish "
+                                          f"uchun {args} ta odam qo'shishlari shart")
             elif len(splited) == 2 and '/off @protozalovchibot' in text.lower():
                 await db.update_power(power='off', chat_id=chat_id)
                 await message.answer(text="Majburiy azolik o'chirildi✅", reply_markup=elite_start_group)
 
         except Exception as err:
-            print(err)
+            print(f"{err} -- groups/moderator/py -> 73")
             pass
 
     # <-------------------------->
@@ -81,19 +78,22 @@ async def deleteads(message: types.Message, state: FSMContext):
     select_is_added = await db.select_add_member(user_id=user_id)
     number_is_added = select_is_added[0][0]
     select_members = await db.select_many_member()
-    if chat_id == select_members[0][1]:
-        if select_members[0][2] == 'add':
-            if checking is not True:
-                try:
-                    if number_is_added < select_members[0][0]:
+    try:
+        if chat_id == select_members[0][1]:
+            if select_members[0][2] == 'add':
+                if checking is not True:
+                    try:
+                        if number_is_added < select_members[0][0]:
 
-                        ed = select_members[0][0] - number_is_added
-                        text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {ed} ta odam qo'shing!</b>"
-                        await message.answer(text=text, reply_markup=elite_start)
-                        await message.delete()
-                except Exception as err:
-                    print(err)
-                pass
+                            ed = select_members[0][0] - number_is_added
+                            text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {ed} ta odam qo'shing!</b>"
+                            await message.answer(text=text, reply_markup=elite_start)
+                            await message.delete()
+                    except Exception as err:
+                        print(err)
+                    pass
+    except Exception as er:
+        print(f"{er} -- groups/moderator.py -> 96")
 
 
     try:
@@ -165,6 +165,11 @@ async def new_member(message: types.Message, state: FSMContext):
 
     user_id = message.from_user.id
     length_members = len(message.new_chat_members)
+
+    try:
+        await db.add_id_to_addmember(user_id=user_id, is_added=0)
+    except:
+        pass
 
     new_chat_members = message.new_chat_members
 
