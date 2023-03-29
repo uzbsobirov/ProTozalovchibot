@@ -40,6 +40,7 @@ async def start_group(message: types.Message, state: FSMContext):
 
     bot_is = await check_is_admin(chat_id=chat_id)
     bot_checking = bot_is[0]['status']
+    print(f"{bot_is} -- bot_is && {bot_checking} -- bot_checking")
 
     for _ in range(1, 1000):
         if user_id == ADMINS[0]:
