@@ -1,4 +1,4 @@
-import asyncio
+import logging
 import datetime
 from aiogram.dispatcher import FSMContext
 from aiogram import types
@@ -33,7 +33,7 @@ async def deleteads(message: types.Message, state: FSMContext):
         chat = await bot.get_chat(chat_id)
         invite_link = await chat.export_invite_link()
         await db.update_group_id(chat_id=chat_id)
-        print(f"{error} -- groups/moderator/py -> 36")
+        logging.info(f"{error} -- groups/moderator.py -> 36")
 
     checking = await check(user_id=user_id, chat_id=chat_id)  # We must check if user is admin in the group
 
@@ -70,7 +70,7 @@ async def deleteads(message: types.Message, state: FSMContext):
                 await message.answer(text="Majburiy azolik o'chirildi✅", reply_markup=elite_start_group)
 
         except Exception as err:
-            print(f"{err} -- groups/moderator/py -> 73")
+            logging.info(f"{err} -- groups/moderator.py -> 73")
             pass
 
     # <-------------------------->
@@ -93,7 +93,7 @@ async def deleteads(message: types.Message, state: FSMContext):
                         print(err)
                     pass
     except Exception as er:
-        print(f"{er} -- groups/moderator.py -> 96")
+        logging.info(f"{er} -- groups/moderator.py -> 96")
 
 
     try:
@@ -180,10 +180,10 @@ async def new_member(message: types.Message, state: FSMContext):
         text = f"<b>Xush kelibsiz {user_mention}</b>"
         await message.answer(text=text)
 
-    select_is_added = await db.select_add_member(user_id=user_id)
-    number_is_added = select_is_added[0][0]
-    number_is_added += length_members
-    await db.update_add_member(user_id=user_id, is_added=number_is_added)
+    select_is_add = await db.select_add_member(user_id=user_id)
+    count_add = select_is_add[0][0]
+    count_add += length_members
+    await db.update_add_member(user_id=user_id, is_added=count_add)
 
 
 

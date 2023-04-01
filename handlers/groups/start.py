@@ -11,6 +11,7 @@ async def start_group(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name
     username = message.from_user.username
     user_id = message.from_user.id
+    get_me = await bot.get_me()
 
     try:
         await db.add_user(
@@ -45,24 +46,24 @@ async def start_group(message: types.Message, state: FSMContext):
     for _ in range(1, 1000):
         if user_id == ADMINS[0]:
             if bot_checking != 'administrator':
-                text = "<b>@ProTozalovchibot - da sizga yordam beraman 👇\n\n" \
+                text = f"<b>@{get_me.username} - da sizga yordam beraman 👇\n\n" \
                        "🖇 - Reklama antimalarial tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
                        "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
                        "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
                        "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
                        "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
-                       "<code>/off @ProTozalovchibot</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
+                       f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
                        "❗️Men to‘liq midrashim uchun ADMIN qilib tayinlashingiz kerak</b>"
                 await message.answer(text=text, reply_markup=elite_start_group)
                 break
             else:
-                text = "<b>@ProTozalovchibot - da sizga yordam beraman 👇\n\n" \
+                text = f"<b>@{get_me.username} - da sizga yordam beraman 👇\n\n" \
                        "🖇 - Reklama antimalarial tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
                        "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
                        "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
                        "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
                        "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
-                       "<code>/off @ProTozalovchibot</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
+                       f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
                        "✅ Bot guruhda oʻz faoliyatini boshladi</b>"
                 await message.answer(text=text, reply_markup=elite_start)
                 break

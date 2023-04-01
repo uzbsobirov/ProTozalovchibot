@@ -16,6 +16,7 @@ async def bot_start(message: types.Message, state: FSMContext):
     username = message.from_user.username
     user_id = message.from_user.id
     user_mention = message.from_user.get_mention(name=full_name, as_html=True)
+    get_me = await bot.get_me()
 
 
     # Add the User to the DB
@@ -30,13 +31,13 @@ async def bot_start(message: types.Message, state: FSMContext):
     except:
         pass
 
-    text_elite = "<b>@ProTozalovchibot - da sizga yordam beraman 👇\n\n" \
+    text_elite = f"<b>@{get_me.username} - da sizga yordam beraman 👇\n\n" \
            "🖇 - Reklama havolalarini tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
            "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
            "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
            "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
            "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
-           "<code>/off @ProTozalovchibot</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
+           f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
            "❗️Men to‘liq ishlashim uchun ADMIN qilib tayinlashingiz kerak</b>"
 
 
