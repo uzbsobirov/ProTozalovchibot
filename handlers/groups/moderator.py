@@ -18,6 +18,7 @@ async def deleteads(message: types.Message, state: FSMContext):
     username = message.from_user.username
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
     chat_id = message.chat.id # Group id
+    check_is_not_bot = message['from']['is_bot']
 
     # Add user id and how many member added to chat
     try:
@@ -81,17 +82,18 @@ async def deleteads(message: types.Message, state: FSMContext):
     try:
         if chat_id == select_members[0][1]:
             if select_members[0][2] == 'add':
-                if checking is not True:
-                    try:
-                        if number_is_added < select_members[0][0]:
+                if check_is_not_bot != True:
+                    if checking is not True:
+                        try:
+                            if number_is_added < select_members[0][0]:
 
-                            ed = select_members[0][0] - number_is_added
-                            text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {ed} ta odam qo'shing!</b>"
-                            await message.answer(text=text, reply_markup=elite_start)
-                            await message.delete()
-                    except Exception as err:
-                        print(err)
-                    pass
+                                ed = select_members[0][0] - number_is_added
+                                await message.delete()
+                                text = f"<b>📛 {user_mention} - Guruhda yozish uchun avval {ed} ta odam qo'shing!</b>"
+                                await message.answer(text=text, reply_markup=elite_start)
+                        except Exception as err:
+                            print(err)
+                            pass
     except Exception as er:
         logging.info(f"{er} -- groups/moderator.py -> 96")
 
@@ -107,7 +109,7 @@ async def deleteads(message: types.Message, state: FSMContext):
         if is_channel == 'Channel_Bot' or is_channel_double == 'Channel':
             await message.delete()
             text = f"{chennel_mention} kanal nomidan yozmang!"
-            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+            deleted_text = await message.answer(text=text, reply_markup=elite_start_group, disable_web_page_preview=True)
             # await asyncio.sleep(10)
             # await deleted_text.delete()
 
@@ -116,14 +118,16 @@ async def deleteads(message: types.Message, state: FSMContext):
         pass
 
 
-    if checking is not True:
-        for entity in message.entities:
-            if entity.type in ['url', 'mention', 'text_link']:
-                await message.delete()
-                text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-                deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-                # await asyncio.sleep(10)
-                # await deleted_text.delete()
+
+    if check_is_not_bot != True:
+        if checking is not True:
+            for entity in message.entities:
+                if entity.type in ['url', 'mention', 'text_link']:
+                    await message.delete()
+                    text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+                    deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+                    # await asyncio.sleep(10)
+                    # await deleted_text.delete()
 
     # List of arabian letter
     list_of_arab_words = ['ب', 'د', 'أنا', 'ص', 'ح', 'ه', 'ز', 'هي تكون', 'ش', 'ن', 'ز', 'تكون', 'ج', 'س', 'ا', 'م', 'ذ', 'ذ', 'ل', 'أ']
@@ -138,25 +142,27 @@ async def deleteads(message: types.Message, state: FSMContext):
 
     list_of_insulting_words = await db.select_all_badwrods()
     msg = message.text
-    if checking is not True:
-        for word in list_of_insulting_words:
-            if msg in word[0]:
-                try:
-                    await message.delete()
-                    text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
-                    bad_text = await message.answer(text=text, reply_markup=elite_start_group)
-                    # await asyncio.sleep(10)
-                    # await bad_text.delete()
-                    restriction_time = 5
-                    until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
-                    await message.chat.restrict(user_id=user_id,
-                                                can_send_messages=False, until_date=until_date)
-                except:
-                    pass
+    if check_is_not_bot != True:
+        if checking is not True:
+            for word in list_of_insulting_words:
+                if msg in word[0]:
+                    try:
+                        await message.delete()
+                        text = f"❗️{user_mention} iltimos xaqoratli so'z ishlatmang"
+                        bad_text = await message.answer(text=text, reply_markup=elite_start_group)
+                        # await asyncio.sleep(10)
+                        # await bad_text.delete()
+                        restriction_time = 5
+                        until_date = datetime.datetime.now() + datetime.timedelta(minutes=restriction_time)
+                        await message.chat.restrict(user_id=user_id,
+                                                    can_send_messages=False, until_date=until_date)
+                    except:
+                        pass
 
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.NEW_CHAT_MEMBERS, state='*')
 async def new_member(message: types.Message, state: FSMContext):
+    chat_id = message.chat.id
     # If New User join to group, we should delete message of user
     try:
         await message.delete()
@@ -180,6 +186,17 @@ async def new_member(message: types.Message, state: FSMContext):
         text = f"<b>Xush kelibsiz {user_mention}</b>"
         await message.answer(text=text)
 
+        try:
+            chat = await bot.get_chat(chat_id)
+            invite_link = await chat.export_invite_link()
+            await db.add_id_of_group(chat_id=chat_id, link=invite_link)
+        except Exception as error:
+            chat = await bot.get_chat(chat_id)
+            invite_link = await chat.export_invite_link()
+            await db.update_group_id(chat_id=chat_id)
+            logging.info(f"{error} -- groups/moderator.py -> 36")
+
+
     select_is_add = await db.select_add_member(user_id=user_id)
     count_add = select_is_add[0][0]
     count_add += length_members
@@ -201,20 +218,21 @@ async def banned_member(message: types.Message, state: FSMContext):
 async def deleteads(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name # Full name
     user_mention = message.from_user.get_mention(name=full_name, as_html=True) # User mention <a href=''></a>
-
+    check_is_not_bot = message['from']['is_bot']
     user_id = message.from_user.id
     chat_id = message.chat.id  # Group id
     checking = await check(user_id=user_id, chat_id=chat_id)
 
-    if checking is not True:
-        types_of_message = ['url', 'mention', 'text_link']
-        entity = message['caption_entities'][0]['type']
-        if entity in types_of_message:
-            await message.delete()
-            text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-            # await asyncio.sleep(10)
-            # await deleted_text.delete()
+    if check_is_not_bot != True:
+        if checking is not True:
+            types_of_message = ['url', 'mention', 'text_link']
+            entity = message['caption_entities'][0]['type']
+            if entity in types_of_message:
+                await message.delete()
+                text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+                deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+                # await asyncio.sleep(10)
+                # await deleted_text.delete()
 
 @dp.message_handler(IsGroup(), content_types=types.ContentType.VIDEO, state='*')
 async def deleteads(message: types.Message, state: FSMContext):
@@ -223,14 +241,16 @@ async def deleteads(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     chat_id = message.chat.id  # Group id
     checking = await check(user_id=user_id, chat_id=chat_id)
+    check_is_not_bot = message['from']['is_bot']
 
-    if checking is not True:
-        types_of_message = ['url', 'mention', 'text_link']
-        entity = message['caption_entities'][0]['type']
-        if entity in types_of_message:
-            await message.delete()
-            text = f"❗️{user_mention} iltimos reklama tarqatmang!"
-            deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
-            # await asyncio.sleep(10)
-            # await deleted_text.delete()
+    if check_is_not_bot != True:
+        if checking is not True:
+            types_of_message = ['url', 'mention', 'text_link']
+            entity = message['caption_entities'][0]['type']
+            if entity in types_of_message:
+                await message.delete()
+                text = f"❗️{user_mention} iltimos reklama tarqatmang!"
+                deleted_text = await message.answer(text=text, reply_markup=elite_start_group)
+                # await asyncio.sleep(10)
+                # await deleted_text.delete()
 

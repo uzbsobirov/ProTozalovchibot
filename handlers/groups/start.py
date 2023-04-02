@@ -1,3 +1,5 @@
+import logging
+
 from loader import dp, db, bot
 from filters import IsGroup
 from keyboards.inline.start import elite_start_group, elite_start
@@ -36,12 +38,12 @@ async def start_group(message: types.Message, state: FSMContext):
     except Exception as error:
         chat_id = message.chat.id
         await db.update_group_id(chat_id=chat_id)
-        print(f"{error} -- groups/start.py -> 38")
+        logging.info(f"{error} -- groups/start.py -> 38")
 
 
     bot_is = await check_is_admin(chat_id=chat_id)
     bot_checking = bot_is[0]['status']
-    print(f"{bot_is} -- bot_is && {bot_checking} -- bot_checking")
+    logging.info(f"{bot_is} -- bot_is && {bot_checking} -- bot_checking")
 
     for _ in range(1, 1000):
         if user_id == ADMINS[0]:
@@ -54,6 +56,16 @@ async def start_group(message: types.Message, state: FSMContext):
                        "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
                        f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
                        "❗️Men to‘liq midrashim uchun ADMIN qilib tayinlashingiz kerak</b>"
+                try:
+                    chat = await bot.get_chat(chat_id)
+                    invite_link = await chat.export_invite_link()
+                    await db.add_id_of_group(chat_id=chat_id, link=invite_link)
+                except Exception as error:
+                    chat = await bot.get_chat(chat_id)
+                    invite_link = await chat.export_invite_link()
+                    await db.update_group_id(chat_id=chat_id)
+                    logging.info(f"{error} -- groups/moderator.py -> 36")
+
                 await message.answer(text=text, reply_markup=elite_start_group)
                 break
             else:
@@ -65,6 +77,15 @@ async def start_group(message: types.Message, state: FSMContext):
                        "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
                        f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
                        "✅ Bot guruhda oʻz faoliyatini boshladi</b>"
+                try:
+                    chat = await bot.get_chat(chat_id)
+                    invite_link = await chat.export_invite_link()
+                    await db.add_id_of_group(chat_id=chat_id, link=invite_link)
+                except Exception as error:
+                    chat = await bot.get_chat(chat_id)
+                    invite_link = await chat.export_invite_link()
+                    await db.update_group_id(chat_id=chat_id)
+                    logging.info(f"{error} -- groups/moderator.py -> 36")
                 await message.answer(text=text, reply_markup=elite_start)
                 break
 
