@@ -184,7 +184,10 @@ async def new_member(message: types.Message, state: FSMContext):
         new_user_id = new_chat_member.id
         user_mention = f"<a href='tg://user?id={new_user_id}'>{full_name}</a>"
         text = f"<b>Xush kelibsiz {user_mention}</b>"
-        await message.answer(text=text)
+        try:
+            await message.answer(text=text)
+        except:
+            pass
 
         try:
             chat = await bot.get_chat(chat_id)
