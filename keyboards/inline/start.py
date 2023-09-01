@@ -1,44 +1,36 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-url = 'https://t.me/ProTozalovchibot?startgroup=new'
 
-gold_start = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="➕ Guruhga Qo'shish", url=url
-            )
-        ],
-        [
-            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
-        ],
-        [
-            InlineKeyboardButton(
-                text="⌨️ Admin panel", callback_data='panel_of_admin'
-            )
-        ]
-    ]
-)
+def start_admin(bot_username):
+    url = 'https://t.me/{}?startgroup=new&admin=change_info+delete_messages+' \
+          'restrict_members+pin_messages+manage_video_chats+promote_members+invite_users'.format(bot_username)
 
-elite_start = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="➕ Guruhga Qo'shish", url=url
-            )
-        ],
-        [
-            InlineKeyboardButton(text="Boshqa botlar", url='https://t.me/kayzenuz')
-        ]
-    ]
-)
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(InlineKeyboardButton(text="➕ Botni guruhga qo'shish", url=url))
+    markup.add(InlineKeyboardButton(text="Foydali botlar", url='t.me/kayzenuz'))
+    markup.add(InlineKeyboardButton(text="Admin panel", callback_data='admin_panel'))
 
-elite_start_group = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="➕ Guruhga Qo'shish", url=url
-            )
-        ]
-    ]
-)
+    return markup
+
+
+def start_user(bot_username):
+    url = 'https://t.me/{}?startgroup=new&admin=change_info+delete_messages+' \
+          'restrict_members+pin_messages+manage_video_chats+promote_members+invite_users'.format(bot_username)
+
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(InlineKeyboardButton(text="➕ Botni guruhga qo'shish", url=url))
+    markup.add(InlineKeyboardButton(text="Foydali botlar", url='t.me/kayzenuz'))
+
+    return markup
+
+
+def add_to_group(bot_username):
+    url = 'https://t.me/{}?startgroup=new&admin=change_info+delete_messages+' \
+          'restrict_members+pin_messages+manage_video_chats+promote_members+invite_users'.format(bot_username)
+
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(
+        InlineKeyboardButton(text="➕ Botni guruhga qo'shish", url=url)
+    )
+
+    return markup

@@ -1,20 +1,25 @@
-import logging
+from aiogram import types
+from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram.dispatcher import FSMContext
+from aiogram.types import MediaGroup
 
+from handlers.users.detectors import detect_admin
+from keyboards.inline.start import start_user
 from loader import dp, db, bot
 from filters import IsGroup
-from keyboards.inline.start import elite_start_group, elite_start
-from utils.misc.group import check_is_admin
-from data.config import ADMINS
+from utils.misc.subscription import check, get_admins
 
-from aiogram import types
-from aiogram.dispatcher import FSMContext
-@dp.message_handler(IsGroup(), commands=['start'], state='*')
-async def start_group(message: types.Message, state: FSMContext):
+
+@dp.message_handler(IsGroup(), CommandStart(), state='*')
+async def bot_start(message: types.Message, state: FSMContext):
     full_name = message.from_user.full_name
     username = message.from_user.username
     user_id = message.from_user.id
     get_me = await bot.get_me()
+    bot_username = get_me.username
+    chat_id = message.chat.id
 
+    # Add the User to the DB
     try:
         await db.add_user(
             full_name=full_name,
@@ -22,71 +27,25 @@ async def start_group(message: types.Message, state: FSMContext):
             user_id=user_id,
             has_acsess='false'
         )
+
     except:
         pass
 
-    chat_id = message.chat.id
-    await state.update_data(
-        {'chat_id': chat_id}
+    text = f"<b>@{bot_username} - orqali sizga yordam beraman 👇\n\n" \
+           "🖇 - Reklama havolalarini tozalayman\n" \
+           "🚫 - Spam xabarlarni tozalayman\n" \
+           "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n" \
+           "🤖 - Arab botlardan ximoya qilaman\n" \
+           "🧹 - Arabcha reklamalardan tozalayman\n" \
+           "🗑 - Kirdi-chiqdilarni tozalayman\n" \
+           "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
+           "👥 - Majburiy azo qo'shtiraman\n" \
+           "📣 - Guruhdagi odamlarni kanalga obuna bo'lmagunicha yozdirmayman\n" \
+           "📊 - Guruhda kim nechta odam qo'shganini hisoblayman\n\n" \
+           f"/help - Qo'shimcha buyruqlarni bilish uchun ☑️\n\n" \
+           "❗️Men guruhda to‘liq ishlashim uchun ADMIN qilib tayinlashingiz kerak</b>"
+
+    await message.answer(
+        text=text,
+        reply_markup=start_user(bot_username)
     )
-
-    try:
-        chat_id = message.chat.id
-        chat = await bot.get_chat(chat_id)
-        invite_link = await chat.export_invite_link()
-        await db.add_id_of_group(chat_id=chat_id, link=invite_link)
-    except Exception as error:
-        chat_id = message.chat.id
-        await db.update_group_id(chat_id=chat_id)
-        logging.info(f"{error} -- groups/start.py -> 38")
-
-
-    bot_is = await check_is_admin(chat_id=chat_id)
-    bot_checking = bot_is[0]['status']
-    logging.info(f"{bot_is} -- bot_is && {bot_checking} -- bot_checking")
-
-    for _ in range(1, 1000):
-        if user_id == ADMINS[0]:
-            if bot_checking != 'administrator':
-                text = f"<b>@{get_me.username} - da sizga yordam beraman 👇\n\n" \
-                       "🖇 - Reklama antimalarial tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
-                       "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
-                       "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
-                       "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
-                       "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
-                       f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
-                       "❗️Men to‘liq midrashim uchun ADMIN qilib tayinlashingiz kerak</b>"
-                try:
-                    chat = await bot.get_chat(chat_id)
-                    invite_link = await chat.export_invite_link()
-                    await db.add_id_of_group(chat_id=chat_id, link=invite_link)
-                except Exception as error:
-                    chat = await bot.get_chat(chat_id)
-                    invite_link = await chat.export_invite_link()
-                    await db.update_group_id(chat_id=chat_id)
-                    logging.info(f"{error} -- groups/moderator.py -> 36")
-
-                await message.answer(text=text, reply_markup=elite_start_group)
-                break
-            else:
-                text = f"<b>@{get_me.username} - da sizga yordam beraman 👇\n\n" \
-                       "🖇 - Reklama antimalarial tozalayman\n🚫 - Spam xabarlarni tozalayman\n" \
-                       "🇸🇦 - Arabcha xabarlarni o‘chirib beraman\n🤖 - Arab botlardan ximoya qilaman\n" \
-                       "🧹 - Arabcha reklamalardan tozalayman\n🗑 - Kirdi-chiqdilarni tozalayman\n" \
-                       "🔞 - So‘kinganlarni faqat o'qish rejimiga tushuraman\n" \
-                       "👥 - Majburiy azo qo'shtiraman\n\n<code>/add 10</code> - 👤Majburiy azo qo'shishni ulash uchun\n" \
-                       f"<code>/off @{get_me.username}</code> - 👤Majburiy azo qo'shishni o'chirib qo'yish\n\n" \
-                       "✅ Bot guruhda oʻz faoliyatini boshladi</b>"
-                try:
-                    chat = await bot.get_chat(chat_id)
-                    invite_link = await chat.export_invite_link()
-                    await db.add_id_of_group(chat_id=chat_id, link=invite_link)
-                except Exception as error:
-                    chat = await bot.get_chat(chat_id)
-                    invite_link = await chat.export_invite_link()
-                    await db.update_group_id(chat_id=chat_id)
-                    logging.info(f"{error} -- groups/moderator.py -> 36")
-                await message.answer(text=text, reply_markup=elite_start)
-                break
-
-    # await state.finish()

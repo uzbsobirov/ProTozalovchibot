@@ -9,10 +9,10 @@ from utils.set_bot_commands import set_default_commands
 async def on_startup(dispatcher):
     await db.create()
     await db.create_table_users()
-    await db.create_table_admin()
-    await db.create_table_groups()
-    await db.create_table_bad_words()
-    await db.create_table_is_added()
+    await db.create_table_group_required()
+    await db.create_table_group_data()
+    await db.create_table_users_data()
+    await db.create_table_group_badwords()
 
     # Birlamchi komandalar (/start va /help)
     await set_default_commands(dispatcher)

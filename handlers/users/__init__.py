@@ -1,11 +1,3 @@
-from . import help
-from . import start
-from . import admin
-from . import stat
-from . import all_backs
-from . import type_sending
-from . import intogroups
-from . import intousers
-from . import private_adv
-from . import group_adv
-from . import bad_words
+from . import (
+    start, help
+)
