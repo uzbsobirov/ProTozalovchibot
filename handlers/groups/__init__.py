@@ -1,3 +1,3 @@
 from . import (
-    start, deleter, join_left_delete, finder, help
+    help, finder, deleter, join_left_delete
 )

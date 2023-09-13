@@ -50,12 +50,10 @@ async def new_member_join(message: types.Message, state: FSMContext):
                 reply_markup=add_to_group(bot_username)
             )
 
-    selection = await db.select_one_user(user_id=user_id)
+    selection = await db.select_one_user_data(user_id=user_id, chat_id=chat_id)
     members_count = selection[0][2]
-    select_chat_id = selection[0][3]
-    if select_chat_id == chat_id:
-        new_members_count = members_count + len(new_chat_members)
-        await db.update_user_members(user_id=user_id, add_members=new_members_count, chat_link=chat_link)
+    new_members_count = members_count + len(new_chat_members)
+    await db.update_user_members(user_id=user_id, add_members=new_members_count, chat_id=chat_id)
 
 
 # Guruhdan chiqib ketgannni o'chirish uchun

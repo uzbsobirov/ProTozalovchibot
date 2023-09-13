@@ -56,7 +56,7 @@ class Database:
         sql = """
         CREATE TABLE IF NOT EXISTS UsersData (
         id SERIAL PRIMARY KEY,
-        user_id BIGINT NOT NULL UNIQUE,
+        user_id BIGINT NOT NULL,
         add_members BigInt,
         chat_id BigInt,
         chat_link TEXT
@@ -129,9 +129,9 @@ class Database:
         sql = "SELECT COUNT(*) FROM Users"
         return await self.execute(sql, fetchval=True)
 
-    async def update_user_members(self, add_members, chat_link, user_id):
-        sql = "UPDATE UsersData SET add_members=$1, chat_link=$2 WHERE user_id=$3"
-        return await self.execute(sql, add_members, chat_link, user_id, execute=True)
+    async def update_user_members(self, add_members, chat_id, user_id):
+        sql = "UPDATE UsersData SET add_members=$1 WHERE chat_id=$2 and user_id=$3"
+        return await self.execute(sql, add_members, chat_id, user_id, execute=True)
 
     async def delete_user(self, user_id):
         sql = "DELETE FROM Users WHERE user_id=$1"
