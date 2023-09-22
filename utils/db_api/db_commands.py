@@ -77,8 +77,10 @@ class Database:
         sql = """
         CREATE TABLE IF NOT EXISTS Required (
         id SERIAL PRIMARY KEY,
-        chat_id BigInt,
-        chat_link TEXT UNIQUE
+        chat_id BigInt UNIQUE,
+        chat_link TEXT,
+        method TEXT,
+        amount BigInt NULL
         );
         """
         await self.execute(sql, execute=True)
@@ -92,6 +94,8 @@ class Database:
         );
         """
         await self.execute(sql, execute=True)
+
+
 
 
     @staticmethod
@@ -113,6 +117,10 @@ class Database:
         sql = "INSERT INTO UsersData (user_id, add_members, chat_id, chat_link) VALUES($1, $2, $3, $4) returning *"
         return await self.execute(sql, user_id, add_members, chat_id, chat_link, fetchrow=True)
 
+    async def add_group_required(self, chat_id: int, chat_link: str, method: str, amount: int):
+        sql = "INSERT INTO Required (chat_id, chat_link, method, amount) VALUES($1, $2, $3, $4) returning *"
+        return await self.execute(sql, chat_id, chat_link, method, amount, fetchrow=True)
+
     async def select_all_users(self):
         sql = "SELECT * FROM Users"
         return await self.execute(sql, fetch=True)
@@ -124,6 +132,10 @@ class Database:
     async def select_one_user(self, user_id):
         sql = "SELECT * FROM UsersData WHERE user_id=$1"
         return await self.execute(sql, user_id, fetch=True)
+
+    async def select_one_group(self, chat_id):
+        sql = "SELECT * FROM Required WHERE chat_id=$1"
+        return await self.execute(sql, chat_id, fetch=True)
 
     async def select_one_user_data(self, user_id, chat_id):
         sql = "SELECT * FROM UsersData WHERE user_id=$1 and chat_id=$2"
@@ -137,9 +149,17 @@ class Database:
         sql = "UPDATE UsersData SET add_members=$1 WHERE chat_id=$2 and user_id=$3"
         return await self.execute(sql, add_members, chat_id, user_id, execute=True)
 
+    async def update_required_members(self, amount, chat_id):
+        sql = "UPDATE Required SET amount=$1 WHERE chat_id=$2"
+        return await self.execute(sql, amount, chat_id, execute=True)
+
     async def delete_user(self, user_id):
         sql = "DELETE FROM Users WHERE user_id=$1"
         await self.execute(sql, user_id, execute=True)
+
+    async def delete_required_group(self, chat_id):
+        sql = "DELETE FROM Required WHERE chat_id=$1"
+        await self.execute(sql, chat_id, execute=True)
 
     async def delete_bad_word(self, badword):
         sql = "DELETE FROM BadWords WHERE badword=$1"

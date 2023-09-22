@@ -1,3 +1,3 @@
 from . import (
-    start
+    start, instruction, required
 )
