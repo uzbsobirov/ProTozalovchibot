@@ -82,7 +82,7 @@ async def get_is_added(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     full_name = message.from_user.full_name
     chat_id = message.chat.id
-    user_menton = message.from_user.get_mention(full_name)
+    user_mention = message.from_user.get_mention(full_name)
 
     try:
         select_user = await db.select_one_user(user_id=user_id)
@@ -93,14 +93,17 @@ async def get_is_added(message: types.Message, state: FSMContext):
 
         if amount > amount_members:
             await message.delete()
-            text = f"{user_menton} - Guruhda yozish uchun 10 ta odam qo'shishingiz kerak" \
+            text = f"{user_mention} - Guruhda yozish uchun {amount} ta odam qo'shishingiz kerak" \
                    f"\n\n👉 /off odam qo'shishni o'chirish"
             await message.answer(text, reply_markup=check_user(user_id))
 
     except IndexError as index:
         logging.info(index)
+        select_group = await db.select_one_group(chat_id=chat_id)
+        amount = select_group[0][4]
+        print(select_group)
         await message.delete()
-        text = f"{user_menton} - Guruhda yozish uchun 10 ta odam qo'shishingiz kerak" \
+        text = f"{user_mention} - Guruhda yozish uchun {amount} ta odam qo'shishingiz kerak" \
                f"\n\n👉 /off odam qo'shishni o'chirish"
         await message.answer(text, reply_markup=check_user(user_id))
 
@@ -109,22 +112,27 @@ async def get_is_added(message: types.Message, state: FSMContext):
 async def check_user_amount(call: types.CallbackQuery, state: FSMContext):
     data = call.data
     splited = data.split('_')
+    user_id = splited[2]
+    chat_id = call.message.chat.id
     try:
-        select_user = await db.select_one_user(user_id=user_id)
+        select_user = await db.select_one_user(user_id=int(user_id))
         amount_members = select_user[0][2]
 
         select_group = await db.select_one_group(chat_id=chat_id)
         amount = select_group[0][4]
 
+        left = amount - amount_members
         if amount > amount_members:
-            await message.delete()
-            text = f"{user_menton} - Guruhda yozish uchun 10 ta odam qo'shishingiz kerak" \
-                   f"\n\n👉 /off odam qo'shishni o'chirish"
-            await message.answer(text, reply_markup=check_user(user_id))
+            text = f"Siz guruhga {amount_members} ta odam qo'shgansiz. " \
+                   f"Guruhda yozish uchun yana {left} ta odam qo'shishingiz zarur❗️"
+            await call.answer(text, show_alert=True)
 
     except IndexError as index:
         logging.info(index)
-        await message.delete()
-        text = f"{user_menton} - Guruhda yozish uchun 10 ta odam qo'shishingiz kerak" \
-               f"\n\n👉 /off odam qo'shishni o'chirish"
-        await message.answer(text, reply_markup=check_user(user_id))
+
+        select_group = await db.select_one_group(chat_id=chat_id)
+        amount = select_group[0][4]
+
+        text = f"Siz xali guruhga odam qo'shmagansiz. " \
+               f"Guruhda yozish uchun {amount} ta odam qo'shishingiz zarur❗️"
+        await call.answer(text, show_alert=True)
