@@ -1,3 +1,4 @@
+from filters import IsAdmin
 from filters.group import IsGroup
 from keyboards.inline.start import add_to_group
 from loader import dp, bot
@@ -8,7 +9,7 @@ from aiogram.dispatcher import FSMContext
 from utils.misc.subscription import check
 
 
-@dp.message_handler(IsGroup(), state='*')
+@dp.message_handler(IsGroup(), IsAdmin(), state='*')
 async def delete_ads(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     full_name = message.from_user.full_name
@@ -25,12 +26,11 @@ async def delete_ads(message: types.Message, state: FSMContext):
 
     entities = ['mention', 'text_link', 'url']
     if is_bot is False:
-        if is_admin is False:
-            if message.entities:
-                for entity in message.entities:
-                    if entity.type in entities:
-                        await message.delete()
-                        await message.answer(text=text, reply_markup=add_to_group(bot_username))
+        if message.entities:
+            for entity in message.entities:
+                if entity.type in entities:
+                    await message.delete()
+                    await message.answer(text=text, reply_markup=add_to_group(bot_username))
 
     # > > >
 

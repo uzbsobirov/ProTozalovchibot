@@ -2,10 +2,11 @@ import logging
 
 from asyncpg import UniqueViolationError
 
+from filters import IsAdmin
 from keyboards.inline.required import check_user
 from keyboards.inline.start import add_to_group
 from loader import dp, bot, db
-from filters.group import IsGroup
+from filters.group import IsGroup, InData
 from keyboards.inline.instruction import instruction
 
 from aiogram import types
@@ -14,7 +15,7 @@ from aiogram.dispatcher.filters import Command
 
 
 # This handler to force users add members
-@dp.message_handler(IsGroup(), Command('add', '/, !'), state='*')
+@dp.message_handler(IsGroup(), InData(), IsAdmin(), Command('add', '/, !'), state='*')
 async def ban_user(message: types.Message, state: FSMContext):
     data = message.text.split(' ')
     if len(data) == 1:
@@ -66,7 +67,7 @@ async def ban_user(message: types.Message, state: FSMContext):
 
 
 # release users from add members
-@dp.message_handler(IsGroup(), Command('off', '/, !'), state='*')
+@dp.message_handler(IsGroup(), InData(), IsAdmin(), Command('off', '/, !'), state='*')
 async def ban_user(message: types.Message, state: FSMContext):
     chat_id = message.chat.id
     get_bot = await bot.get_me()
@@ -77,8 +78,8 @@ async def ban_user(message: types.Message, state: FSMContext):
     await message.answer(text, reply_markup=add_to_group(bot_username))
 
 
-@dp.message_handler(IsGroup(), content_types=types.ContentType.ANY, state='*')
-async def get_is_added(message: types.Message, state: FSMContext):
+@dp.message_handler(IsGroup(), InData(), IsAdmin(), content_types=types.ContentType.ANY, state='*')
+async def is_added(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     full_name = message.from_user.full_name
     chat_id = message.chat.id

@@ -125,6 +125,10 @@ class Database:
         sql = "SELECT * FROM Users"
         return await self.execute(sql, fetch=True)
 
+    async def select_required_groups(self):
+        sql = "SELECT * FROM Required"
+        return await self.execute(sql, fetch=True)
+
     async def select_all_users_data(self):
         sql = "SELECT * FROM UsersData"
         return await self.execute(sql, fetch=True)
