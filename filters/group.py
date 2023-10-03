@@ -18,7 +18,6 @@ class InData(BoundFilter):
         chat_id = message.chat.id
         select_required = await db.select_required_groups()
         for item in select_required:
-            if chat_id in item:
+            if chat_id == item[1]:
                 return True
-            else:
-                return False
+        return False
